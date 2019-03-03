@@ -282,15 +282,16 @@ module.exports = function(app) {
     });
 
     // get individual recipe by id
-    // app.get('/api/recipes/:recipeId', function(req, res) {
-    //     var recipeId = req.params.recipeId;
-    //     Recipes.findById(recipeId, function(err, recipe) {
-    //         if (err) {
-    //             res.send(err);
-    //         }
-    //         res.json(recipe);
-    //     });
-    // });
+    app.get('/api/recipes/:recipeId', function(req, res) {
+        var recipeId = req.params.recipeId;
+        console.log("recipeId", recipeId);
+        Recipes.findById(recipeId, function(err, recipe) {
+            if (err) {
+                res.send(err);
+            }
+            res.json(recipe);
+        });
+    });
 
     // get individual recipe by name/category
     app.get('/api/recipes/:categoryKey/:recipeName', function(req, res) {
@@ -381,16 +382,16 @@ module.exports = function(app) {
                 res.send(err);
             }
             if (recipe) {
-                if(req.user.username == recipe.addedBy.username || req.user.groups.items[0].name == 'Admin') {
+                // if(req.user.username == recipe.addedBy.username || req.user.groups.items[0].name == 'Admin') {
                     recipe.remove(function(err) {
                         if(err) {
                             res.send(err);
                         }
                         res.json();
                     });
-                } else {
-                    res.send('You do not have access to delete this recipe.');
-                }
+                // } else {
+                //     res.send('You do not have access to delete this recipe.');
+                // }
             }
         });
     });

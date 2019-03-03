@@ -1,10 +1,13 @@
 // modules =================================================
-var express        = require('express');
+var express        	= require('express');
+var bodyParser     	= require('body-parser');
+var cors			= require('cors');
+var helmet     		= require('helmet');
+var morgan     		= require('morgan');
+var mongoose       	= require('mongoose');
+
+// define app ==============================================
 var app            = express();
-var bodyParser     = require('body-parser');
-var methodOverride = require('method-override');
-var mongoose       = require('mongoose');
-var multer         = require('multer');
 
 // configuration ===========================================
     
@@ -18,20 +21,21 @@ var port = process.env.PORT || 3001;
 // connect to our mongoDB database 
 mongoose.connect(db.url, { useMongoClient: true });
 
+// enhance your app security with Helmet
+app.use(helmet());
+
 // get all data/stuff of the body (POST) parameters
 // parse application/json 
 app.use(bodyParser.json()); 
 
-// parse application/vnd.api+json as json
-app.use(bodyParser.json({ type: 'application/vnd.api+json' })); 
+// enable all CORS requests
+app.use(cors());
+
+// log HTTP requests
+app.use(morgan('combined'));
 
 // parse application/x-www-form-urlencoded
 // app.use(bodyParser.urlencoded({ extended: true })); 
-
-// override with the X-HTTP-Method-Override header in the request. simulate DELETE/PUT
-app.use(methodOverride('X-HTTP-Method-Override')); 
-
-multer({ dest: 'uploads/' })
 
 // set the static files location /public/img will be /img for users
 app.use(express.static(__dirname + '/dist')); 
@@ -44,9 +48,9 @@ require('./src/server/routes')(app); // configure our routes
 
 // start app ===============================================
 // startup our app at http://localhost:3001
-  var server = app.listen(port, function() {
-    console.log('Running on port ' + port);
-  });               
+app.listen(port, function() {
+console.log('Running on port ' + port);
+});               
 
 // expose app           
 exports = module.exports = app;

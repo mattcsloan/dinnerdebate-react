@@ -1,3 +1,3 @@
 module.exports = {
-    url : process.env.MONGOLAB_URI || 'mongodb://localhost/dinnerdebate-react'
+    url : process.env.MONGOLAB_URI || 'mongodb://localhost/dinnerdebate-react4'
 }
