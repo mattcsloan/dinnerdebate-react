@@ -1,12 +1,15 @@
 # DinnerDebate
-Recipe Application
+A simple recipe application - built on MERN stack
+* MongoDB
+* ExpressJS
+* React
+* NodeJS
 
-##setup
+## Setup
 npm install
-bower install
 
 ## Compile, Minify, and Run app
 npm start
 
 ## Port
-5000
+3001
