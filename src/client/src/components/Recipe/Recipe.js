@@ -25,9 +25,9 @@ class Recipe extends Component {
         <h1>{recipe.name}</h1>
         <p>{recipe.description}</p>
         <hr />
-        <p>Category: {recipe.category}</p>
-        <p>Prep Time: {recipe.prepTime}</p>
-        <p>Cook Time: {recipe.cookTime}</p>
+        <p><strong>Category:</strong> {recipe.category}</p>
+        <p><strong>Prep Time:</strong> {recipe.prepTime}</p>
+        <p><strong>Cook Time:</strong> {recipe.cookTime}</p>
         {recipe.ingredients && recipe.ingredients.map((ingredientList, index) => (
           <div key={index}>
             <h3>{ingredientList.title}</h3>
