@@ -1,13 +1,13 @@
 // modules =================================================
-var express        	= require('express');
-var bodyParser     	= require('body-parser');
-var cors			= require('cors');
-var helmet     		= require('helmet');
-var morgan     		= require('morgan');
-var mongoose       	= require('mongoose');
+var express     = require('express');
+var bodyParser  = require('body-parser');
+var cors        = require('cors');
+var helmet      = require('helmet');
+var morgan      = require('morgan');
+var mongoose    = require('mongoose');
 
 // define app ==============================================
-var app            = express();
+var app         = express();
 
 // configuration ===========================================
     
@@ -16,7 +16,6 @@ var db = require('./src/server/config/db');
 
 // set our port
 var port = process.env.PORT || 3001; 
-
 
 // connect to our mongoDB database 
 mongoose.connect(db.url, { useMongoClient: true });

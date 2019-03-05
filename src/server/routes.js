@@ -1,13 +1,27 @@
-var navigation = require('./data/navigation');
-var meals = require('./data/meals');
-var mealsDev = require('./data/meals-dev');
-var Recipes = require('./models/recipes');
-var Meals = require('./models/meals');
-var cloudinary = require('cloudinary');
-var multer = require('multer');
-var upload = multer({ dest: './uploads'});
+var navigation  = require('./data/navigation');
+var meals       = require('./data/meals');
+var mealsDev    = require('./data/meals-dev');
+var Recipes     = require('./models/recipes');
+var Meals       = require('./models/meals');
+var cloudinary  = require('cloudinary');
+var multer      = require('multer');
+var upload      = multer({ dest: './uploads'});
+var jwt         = require('express-jwt');
+var jwksRsa     = require('jwks-rsa');
 
 module.exports = function(app) {
+
+    const checkJwt = jwt({
+        secret: jwksRsa.expressJwtSecret({
+          cache: true,
+          rateLimit: true,
+          jwksRequestsPerMinute: 5,
+          jwksUri: `${process.env.AUTH0_DOMAIN}/.well-known/jwks.json`
+        }),
+        audience: process.env.AUTH0_CLIENTID,
+        issuer: process.env.AUTH0_DOMAIN,
+        algorithms: ['RS256']
+    });
 
     // server routes ===========================================================
     // api calls
@@ -27,7 +41,7 @@ module.exports = function(app) {
     });
 
     // create meal
-    app.post('/api/meals', function(req, res) {
+    app.post('/api/meals', checkJwt, function(req, res) {
         // use mongoose to add a new meal in the database
         var meal = new Meals({
             date: req.body.date,
@@ -106,7 +120,7 @@ module.exports = function(app) {
     });
 
     // update individual meal
-    app.put('/api/meals/:mealDate', function(req, res) {
+    app.put('/api/meals/:mealDate', checkJwt, function(req, res) {
         var mealDate = req.params.mealDate;
         var month = mealDate.substr(0, 2);
         var day = mealDate.substr(2, 2);
@@ -143,7 +157,7 @@ module.exports = function(app) {
     });
 
     // delete meal
-    app.delete('/api/meals/:mealDate', function(req, res) {
+    app.delete('/api/meals/:mealDate', checkJwt, function(req, res) {
         var mealDate = req.params.mealDate;
         var month = mealDate.substr(0, 2);
         var day = mealDate.substr(2, 2);
@@ -234,7 +248,7 @@ module.exports = function(app) {
     });
 
     // create recipe
-    app.post('/api/recipes', function(req, res) {
+    app.post('/api/recipes', checkJwt, function(req, res) {
         // use mongoose to add a new recipe in the database
         // look for existing recipe with same name and category first
         Recipes.findOne({
@@ -316,7 +330,7 @@ module.exports = function(app) {
     }); 
 
     // update individual recipe
-    app.put('/api/recipes/:categoryKey/:key/:recipeId', function(req, res) {
+    app.put('/api/recipes/:categoryKey/:key/:recipeId', checkJwt, function(req, res) {
         if(req.user.username == req.body.addedBy.username || req.user.groups.items[0].name == 'Admin') {
             Recipes.findOne({
                 category: req.body.category, 
@@ -374,7 +388,7 @@ module.exports = function(app) {
     });
 
     // delete individual recipe
-    app.delete('/api/recipes/:recipeId', function(req, res) {
+    app.delete('/api/recipes/:recipeId', checkJwt, function(req, res) {
 
         var recipeId = req.params.recipeId;
         Recipes.findById(recipeId, function (err, recipe) {
@@ -430,7 +444,7 @@ module.exports = function(app) {
     });
 
     //remove image from cloudinary cdn library (to conserve space)
-    app.delete('/api/upload', function(req, res) {
+    app.delete('/api/upload', checkJwt, function(req, res) {
         var public_id = req.query.id;
         public_id = public_id.split('.')[0];
         cloudinary.api.delete_resources([public_id],
