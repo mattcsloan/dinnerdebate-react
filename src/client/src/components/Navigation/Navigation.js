@@ -11,8 +11,11 @@ function Navigation(props) {
   return (
     <nav className="navigation">
       <div className="wrapper">
-        <Link to="/">
+      <Link to="/">
           Recipes
+        </Link>
+        <Link to="/recipes/create">
+          Create
         </Link>
         {!auth0Client.isAuthenticated() &&
           <a onClick={auth0Client.signIn}>Sign In</a>

@@ -24,6 +24,8 @@ You will need to set up your `.env` file based on the `.env.sample` provided in 
 To run the React UI, you'll want to first go into the `client` directory with:
 ```cd src/client```
 
+Note that there is a similar `.env` file needed in the `src/client` directory for Auth0 authentication as well as the one at the root of the project used for backend environment variables. See the `src/client/.env.sample` file.
+
 Then, install packages via:
 ```yarn```
 

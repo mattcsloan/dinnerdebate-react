@@ -4,6 +4,9 @@ import Navigation from './components/Navigation';
 import Recipes from './components/Recipes';
 import Recipe from './components/Recipe';
 import Callback from './components/Callback';
+import SecuredRoute from './components/SecuredRoute';
+import RecipeCreate from './components/RecipeCreate';
+
 import './assets/styles/app.scss';
 
 class App extends Component {
@@ -13,7 +16,8 @@ class App extends Component {
         <Navigation />
         <div className="wrapper">
           <Route exact path='/' component={Recipes} />
-          <Route exact path='/recipes/:recipeId' component={Recipe} />
+          <SecuredRoute exact path='/recipes/create' component={RecipeCreate} />
+          <Route exact path='/recipes/view/:recipeId' component={Recipe} />
           <Route exact path='/callback' component={Callback} />
         </div>
       </div>
