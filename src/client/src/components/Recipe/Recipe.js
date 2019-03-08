@@ -23,8 +23,8 @@ class Recipe extends Component {
     return (
       <div>
         <h1>{recipe.name}</h1>
-        <p>{recipe.description}</p>
         <hr />
+        <p>{recipe.description}</p>
         <p><strong>Category:</strong> {recipe.category}</p>
         <p><strong>Prep Time:</strong> {recipe.prepTime}</p>
         <p><strong>Cook Time:</strong> {recipe.cookTime}</p>

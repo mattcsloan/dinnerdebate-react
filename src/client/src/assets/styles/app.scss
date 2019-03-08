@@ -16,6 +16,25 @@ a {
   }
 }
 
+button {
+  background: #b13fa3;
+  color: #fff;
+  padding: 12px 32px;
+  font-size: 18px;
+  line-height: 1.1em;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: 0;
+  border-radius: 4px;
+  font-family: Lato, 'Open Sans', Arial, Helvetica, sans-serif;
+  font-weight: 600;
+  margin: 24px 0;
+
+  &:hover {
+    background: #421b52;
+    cursor: pointer;
+  }
+}
+
 h1 {
   color: #b13fa3;
   margin: 0 0 8px 0;
@@ -32,6 +51,28 @@ hr {
   border-top: 1px solid #ccc;
   margin: 10px 0;
   padding: 0;
+}
+
+input[type=text],
+textarea {
+  border: 1px solid #c3c3c3;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 8px 12px;
+  line-height: 1.1em;
+  color: #333;
+  font-size: 16px;
+  min-width: 500px;
+
+  &:focus {
+    border-color: #421b52;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    outline: 0;
+  }
+}
+
+textarea {
+  height: 200px;
 }
 
 ul {
@@ -51,4 +92,16 @@ li {
   box-sizing: border-box;
 }
 
+.form-group {
+  display: block;
+  margin: 0 0 24px 0;
+  display: flex;
+
+  label {
+    margin-right: 16px;
+    min-width: 160px;
+  }
+}
+
 @import '../../components/Navigation/style';
+@import '../../components/RecipeCreate/style';

@@ -11,31 +11,82 @@ class RecipeCreate extends Component {
     this.state = {
       disabled: false,
       name: '',
-      description: '',
       key: '',
+      description: '',
+      category: '',
+      categoryKey: '',
+      date: '',
+      source: '',
+      sourceURL: '',
+      addedBy: {},
+      prepTime: 0,
+      cookTime: 0,
+      ingredients: [],
+      directions: '',
+      hints: [],
+      pairings: [],
+      image: {},
+      servings: '',
+      tags: [],
+      featured: false,
+      relatedItems: []
     };
   }
 
-  updateDescription(value) {
+  updateValue(type, value) {
     this.setState({
-      description: value,
-    });
-  }
-
-  updateName(value) {
-    this.setState({
-      name: value,
+      [type]: value,
     });
   }
 
   async submit() {
+
+    const {
+      name,
+      key, 
+      description, 
+      category, 
+      categoryKey, 
+      source, 
+      sourceURL,
+      addedBy,
+      prepTime,
+      cookTime,
+      ingredients,
+      directions,
+      hints,
+      pairings,
+      image,
+      servings,
+      tags,
+      featured,
+      relatedItems
+    } = this.state;
+
     this.setState({
       disabled: true,
     });
 
     await axios.post('http://localhost:3001/api/recipes', {
-      name: this.state.name,
-      description: this.state.description,
+      name,
+      key, 
+      description, 
+      category, 
+      categoryKey, 
+      source, 
+      sourceURL,
+      addedBy,
+      prepTime,
+      cookTime,
+      ingredients,
+      directions,
+      hints,
+      pairings,
+      image,
+      servings,
+      tags,
+      featured,
+      relatedItems
     }, {
       headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
     });
@@ -44,41 +95,127 @@ class RecipeCreate extends Component {
   }
 
   render() {
+
+    const { disabled } = this.state;
     return (
-      <div className="container">
-        <div className="row">
-          <div className="col-12">
-            <div className="card border-primary">
-              <div className="card-header">New Recipe</div>
-              <div className="card-body text-left">
-                <div className="form-group">
-                  <label htmlFor="exampleInputEmail1">Name:</label>
-                  <input
-                    disabled={this.state.disabled}
-                    type="text"
-                    onBlur={(e) => {this.updateName(e.target.value)}}
-                    placeholder="Give your recipe a title"
-                  />
-                </div>
-                <div className="form-group">
-                  <label htmlFor="exampleInputEmail1">Description:</label>
-                  <input
-                    disabled={this.state.disabled}
-                    type="text"
-                    onBlur={(e) => {this.updateDescription(e.target.value)}}
-                    placeholder="Give more context to your question."
-                  />
-                </div>
-                <button
-                  disabled={this.state.disabled}
-                  className="btn btn-primary"
-                  onClick={() => {this.submit()}}>
-                  Create Recipe
-                </button>
-              </div>
-            </div>
+      <div className="create-recipe">
+        <h1>New Recipe</h1>
+        <hr />
+        <form>
+        <div className="form-group">
+            <label>Name:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("name", e.target.value)}}
+              placeholder="Recipe title"
+            />
           </div>
-        </div>
+          <div className="form-group">
+            <label>Key:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("key", e.target.value)}}
+              placeholder="Unique number"
+            />
+          </div>
+          <div className="form-group">
+            <label>Description:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("description", e.target.value)}}
+              placeholder="Describe your recipe"
+            />
+          </div>
+          <div className="form-group">
+            <label>Category:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("category", e.target.value)}}
+              placeholder="Select a category"
+            />
+          </div>
+          <div className="form-group">
+            <label>Category Key:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("categoryKey", e.target.value)}}
+              placeholder="Unique category number"
+            />
+          </div>
+          <div className="form-group">
+            <label>Source:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("source", e.target.value)}}
+              placeholder="Name of recipe creator"
+            />
+          </div>
+          <div className="form-group">
+            <label>Source URL:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("sourceURL", e.target.value)}}
+              placeholder="URL to recipe (if applicable)"
+            />
+          </div>
+          <div className="form-group">
+            <label>Prep Time:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("prepTime", e.target.value)}}
+              placeholder=""
+            />
+          </div>
+          <div className="form-group">
+            <label>Cook Time:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("cookTime", e.target.value)}}
+              placeholder=""
+            />
+          </div>
+          <div className="form-group">
+            <label>Servings:</label>
+            <input
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("servings", e.target.value)}}
+              placeholder=""
+            />
+          </div>
+          <div className="form-group">
+            <label>Directions:</label>
+            <textarea
+              disabled={disabled}
+              type="text"
+              onChange={(e) => {this.updateValue("directions", e.target.value)}}
+              placeholder="Enter recipe directions"
+            >
+            </textarea>
+          </div>
+          <button
+            disabled={disabled}
+            className="btn btn-primary"
+            onClick={() => {this.submit()}}
+          >
+            Create Recipe
+          </button>
+        </form>
+
+
+
+
+
+
       </div>
     )
   }
