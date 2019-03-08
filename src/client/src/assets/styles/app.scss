@@ -16,7 +16,8 @@ a {
   }
 }
 
-button {
+button,
+.btn {
   background: #b13fa3;
   color: #fff;
   padding: 12px 32px;
@@ -28,21 +29,28 @@ button {
   font-family: Lato, 'Open Sans', Arial, Helvetica, sans-serif;
   font-weight: 600;
   margin: 24px 0;
+  display: inline-block;
+  
+  &.btn-warning {
+    background: #cc0000;
+  }
 
   &:hover {
     background: #421b52;
+    color: #fff;
+    text-decoration: none;
     cursor: pointer;
   }
 }
 
 h1 {
-  color: #b13fa3;
+  color: #421b52;
   margin: 0 0 8px 0;
   font-size: 26px;
 }
 
 h3 {
-  color: #421b52;
+  color: #b13fa3;
   font-size: 20px;
 }
 

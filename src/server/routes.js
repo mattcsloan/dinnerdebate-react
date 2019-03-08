@@ -177,10 +177,10 @@ module.exports = function(app) {
 
     // update individual recipe
     app.put('/api/recipes/:categoryKey/:key/:recipeId', checkJwt, function(req, res) {
-        if(req.user.username == req.body.addedBy.username || req.user.groups.items[0].name == 'Admin') {
+        // if(req.user.username == req.body.addedBy.username || req.user.groups.items[0].name == 'Admin') {
             Recipes.findOne({
-                category: req.body.category, 
-                key: req.body.name
+                categoryKey: req.body.categoryKey, 
+                key: req.body.key
             }, function(err, recipeReturned) { 
                 if (err) {
                     res.send(err);
@@ -227,10 +227,10 @@ module.exports = function(app) {
                     res.send('Recipe already exists.');
                 }
             });
-        }
-        else {
-            res.send('You do not have access to update this recipe.');
-        }
+        // }
+        // else {
+        //     res.send('You do not have access to update this recipe.');
+        // }
     });
 
     // delete individual recipe

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 class Recipe extends Component {
@@ -22,7 +23,8 @@ class Recipe extends Component {
     if (recipe === null) return <p>Loading ...</p>;
     return (
       <div>
-        <h1>{recipe.name}</h1>
+        <h1><Link to="/">Recipes</Link> &raquo; {recipe.name}</h1>
+
         <hr />
         <p>{recipe.description}</p>
         <p><strong>Category:</strong> {recipe.category}</p>
@@ -38,6 +40,13 @@ class Recipe extends Component {
             </ul>
           </div>
         ))}
+
+        <Link
+          to={`/recipes/edit/${this.props.match.params.recipeId}`}
+          className="btn"
+        >
+          Edit Recipe
+        </Link>
       </div>
     )
   }

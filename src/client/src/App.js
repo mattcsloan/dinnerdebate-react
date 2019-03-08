@@ -6,6 +6,7 @@ import Recipe from './components/Recipe';
 import Callback from './components/Callback';
 import SecuredRoute from './components/SecuredRoute';
 import RecipeCreate from './components/RecipeCreate';
+import RecipeEdit from './components/RecipeEdit';
 
 import './assets/styles/app.scss';
 
@@ -18,6 +19,7 @@ class App extends Component {
           <Route exact path='/' component={Recipes} />
           <SecuredRoute exact path='/recipes/create' component={RecipeCreate} />
           <Route exact path='/recipes/view/:recipeId' component={Recipe} />
+          <Route exact path='/recipes/edit/:recipeId' component={RecipeEdit} />
           <Route exact path='/callback' component={Callback} />
         </div>
       </div>

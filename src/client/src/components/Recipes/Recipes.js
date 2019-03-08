@@ -21,18 +21,18 @@ class Recipes extends Component {
   render() {
     return (
       <div className="container">
-        <div className="row">
-          {this.state.recipes === null && <p>Loading recipes...</p>}
-          {
-            this.state.recipes && this.state.recipes.map(recipe => (
-              <div key={recipe.key} >
-                <Link to={`/recipes/view/${recipe._id}`}>
-                  {recipe.name}
-                </Link>
-              </div>
-            ))
-          }
-        </div>
+        <h1>Recipes</h1>
+        <hr />
+        {this.state.recipes === null && <p>Loading recipes...</p>}
+        {
+          this.state.recipes && this.state.recipes.map(recipe => (
+            <div key={recipe.key} >
+              <Link to={`/recipes/view/${recipe._id}`}>
+                {recipe.name}
+              </Link>
+            </div>
+          ))
+        }
       </div>
     )
   }
