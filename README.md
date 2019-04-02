@@ -11,6 +11,8 @@ A simple recipe application - built on MERN stack
 ```npm install```
 
 ### DB and Authentication
+First, start up MongoDB with `mongod` (or `sudo mongod` if needed).
+
 You will need to set up your `.env` file based on the `.env.sample` provided in order to hook up to a database, as well as being able to authenticate. This application uses Auth0 for handling authentication. Copy the contents from the sample file to your new `.env` file, add the proper values, then run:
 ```source .env```
 

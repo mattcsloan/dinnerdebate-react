@@ -137,7 +137,7 @@ class RecipeEdit extends Component {
       headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
     });
 
-    this.props.history.push('/');
+    this.props.history.push(`/recipes/view/${this.props.match.params.recipeId}`);
   }
 
   async deleteRecipe() {
