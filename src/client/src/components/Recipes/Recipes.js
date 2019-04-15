@@ -12,7 +12,7 @@ class Recipes extends Component {
   }
 
   async componentDidMount() {
-    const recipes = (await axios.get('http://localhost:3001/api/recipes')).data;
+    const recipes = (await axios.get('/api/recipes')).data;
     this.setState({
       recipes,
     });

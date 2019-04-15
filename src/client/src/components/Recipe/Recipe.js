@@ -12,7 +12,7 @@ class Recipe extends Component {
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-    const recipe = (await axios.get(`http://localhost:3001/api/recipes/${params.recipeId}`)).data;
+    const recipe = (await axios.get(`/api/recipes/${params.recipeId}`)).data;
     this.setState({
       recipe,
     });

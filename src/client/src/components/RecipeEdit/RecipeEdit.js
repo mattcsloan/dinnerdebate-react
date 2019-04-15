@@ -35,7 +35,7 @@ class RecipeEdit extends Component {
 
   async componentDidMount() {
     const { match: { params } } = this.props;
-    const recipe = (await axios.get(`http://localhost:3001/api/recipes/${params.recipeId}`)).data;
+    const recipe = (await axios.get(`/api/recipes/${params.recipeId}`)).data;
     const {
       name,
       key, 
@@ -113,7 +113,7 @@ class RecipeEdit extends Component {
     this.setState({
       disabled: true,
     });
-    await axios.put(`http://localhost:3001/api/recipes/${categoryKey}/${key}/${this.props.match.params.recipeId}`, {
+    await axios.put(`/api/recipes/${categoryKey}/${key}/${this.props.match.params.recipeId}`, {
       name,
       key, 
       description, 
@@ -145,7 +145,7 @@ class RecipeEdit extends Component {
       disabled: true,
     });
 
-    await axios.delete(`http://localhost:3001/api/recipes/${this.props.match.params.recipeId}`, {
+    await axios.delete(`/api/recipes/${this.props.match.params.recipeId}`, {
       headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
     });
     this.props.history.push('/');
