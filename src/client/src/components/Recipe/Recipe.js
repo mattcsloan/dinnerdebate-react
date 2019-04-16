@@ -11,8 +11,14 @@ class Recipe extends Component {
   }
 
   async componentDidMount() {
-    const { match: { params } } = this.props;
-    const recipe = (await axios.get(`/api/recipes/${params.recipeId}`)).data;
+    const { match: { params }, location: { state } } = this.props;
+    console.log("props", this.props);
+    let recipe;
+    if(state && state.recipeId) {
+      recipe = (await axios.get(`/api/recipes/${state.recipeId}`)).data;
+    } else {
+      recipe = (await axios.get(`/api/recipes/${params.categoryKey}/${params.key}`)).data;
+    }
     this.setState({
       recipe,
     });
@@ -20,6 +26,8 @@ class Recipe extends Component {
 
   render() {
     const { recipe } = this.state;
+    const { match: { params } } = this.props;
+
     if (recipe === null) return <p>Loading ...</p>;
     return (
       <div>
@@ -42,7 +50,7 @@ class Recipe extends Component {
         ))}
 
         <Link
-          to={`/recipes/edit/${this.props.match.params.recipeId}`}
+          to={`/recipes/edit/${params.categoryKey}/${params.key}`}
           className="btn"
         >
           Edit Recipe

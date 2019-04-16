@@ -27,7 +27,12 @@ class Recipes extends Component {
         {
           this.state.recipes && this.state.recipes.map(recipe => (
             <div key={recipe.key} >
-              <Link to={`/recipes/view/${recipe._id}`}>
+              <Link
+                to={{
+                  pathname: `/recipes/view/${recipe.categoryKey}/${recipe.key}`,
+                  state: { recipeId: recipe._id }
+                }}
+              >
                 {recipe.name}
               </Link>
             </div>

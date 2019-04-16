@@ -37,7 +37,7 @@ class RecipeCreate extends Component {
 
   updateValue(type, value) {
     type === "name" && this.createKey(value);
-    this.setState({ [type]: value, });
+    this.setState({ [type]: value });
   }
 
   updateCategoryValues(label, value) {

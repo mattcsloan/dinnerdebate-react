@@ -4,6 +4,8 @@ import axios from 'axios';
 
 import auth0Client from '../Authentication';
 
+import categories from '../../data/recipeCategories';
+
 class RecipeEdit extends Component {
   constructor(props) {
     super(props);
@@ -34,8 +36,13 @@ class RecipeEdit extends Component {
   }
 
   async componentDidMount() {
-    const { match: { params } } = this.props;
-    const recipe = (await axios.get(`/api/recipes/${params.recipeId}`)).data;
+    const { match: { params }, location: { state } } = this.props;
+    let recipe;
+    if(state && state.recipeId) {
+      recipe = (await axios.get(`/api/recipes/${state.recipeId}`)).data;
+    } else {
+      recipe = (await axios.get(`/api/recipes/${params.categoryKey}/${params.key}`)).data;
+    }
     const {
       name,
       key, 
@@ -82,9 +89,32 @@ class RecipeEdit extends Component {
   }
 
   updateValue(type, value) {
+    type === "name" && this.createKey(value);
+    this.setState({ [type]: value });
+  }
+
+  updateCategoryValues(label, value) {
     this.setState({
-      [type]: value,
+      "category": label,
+      "categoryKey": value
     });
+  }
+
+  createKey = title => {
+    if(title) {
+      const titleKey = title.replace(/\W+/g, '-').toLowerCase();
+      this.setState({"key": titleKey});
+      return titleKey;
+      // keyAvailability();
+    } else {
+      // vm.recipeKey = '';
+      // vm.keyIsAvailable = true;
+    }
+  }
+
+  createCategoryKey = category => {
+    return category.replace(/\W+/g, '-').toLowerCase();
+    // keyAvailability();
   }
 
   async submit() {
@@ -198,7 +228,6 @@ class RecipeEdit extends Component {
               onChange={(e) => {this.updateValue("key", e.target.value)}}
               placeholder="Unique number"
               value={key}
-
             />
           </div>
           <div className="form-group">
@@ -213,23 +242,22 @@ class RecipeEdit extends Component {
           </div>
           <div className="form-group">
             <label>Category:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={(e) => {this.updateValue("category", e.target.value)}}
-              placeholder="Select a category"
-              value={category}
-            />
-          </div>
-          <div className="form-group">
-            <label>Category Key:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={(e) => {this.updateValue("categoryKey", e.target.value)}}
-              placeholder="Unique category number"
-              value={categoryKey}
-            />
+            <select
+              onChange={(e) => {
+                this.updateCategoryValues(e.target[e.target.selectedIndex].innerHTML, e.target.value)
+              }}
+            >
+              <option value="">Select a category...</option>
+              {categories.map(category => (
+                <option
+                  key={category}
+                  value={this.createCategoryKey(category)}
+                  selected={categoryKey === this.createCategoryKey(category)}
+                >
+                  {category}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="form-group">
             <label>Source:</label>
