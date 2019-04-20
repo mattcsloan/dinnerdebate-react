@@ -1,8 +1,4 @@
-var navigation  = require('./data/navigation');
-var meals       = require('./data/meals');
-var mealsDev    = require('./data/meals-dev');
 var Recipes     = require('./models/recipes');
-var Meals       = require('./models/meals');
 var cloudinary  = require('cloudinary');
 var multer      = require('multer');
 var upload      = multer({ dest: './uploads'});
@@ -25,9 +21,6 @@ module.exports = function(app) {
 
     // server routes ===========================================================
     // api calls
-    app.get('/api/navigation', function(req, res) {
-        res.status(201).json(navigation.items);
-    });
 
     // get all recipes
     app.get('/api/recipes', function(req, res) {
@@ -144,7 +137,6 @@ module.exports = function(app) {
     // get individual recipe by id
     app.get('/api/recipes/:recipeId', function(req, res) {
         var recipeId = req.params.recipeId;
-        console.log("recipeId", recipeId);
         Recipes.findById(recipeId, function(err, recipe) {
             if (err) {
                 res.send(err);

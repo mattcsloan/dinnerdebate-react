@@ -52,12 +52,12 @@ class App extends Component {
           />
           <Route 
             exact 
-            path='/recipes/view/:recipeId' 
+            path='/recipes/view/:categoryKey/:key' 
             component={Recipe} 
           />
           <SecuredRoute 
             exact 
-            path='/recipes/edit/:recipeId' 
+            path='/recipes/edit/:categoryKey/:key' 
             component={RecipeEdit} 
             checkingSession={checkingSession}
           />

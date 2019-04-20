@@ -4,6 +4,8 @@ import axios from 'axios';
 
 import auth0Client from '../Authentication';
 
+import categories from '../../data/recipeCategories';
+
 class RecipeEdit extends Component {
   constructor(props) {
     super(props);
@@ -34,9 +36,15 @@ class RecipeEdit extends Component {
   }
 
   async componentDidMount() {
-    const { match: { params } } = this.props;
-    const recipe = (await axios.get(`http://localhost:3001/api/recipes/${params.recipeId}`)).data;
+    const { match: { params }, location: { state } } = this.props;
+    let recipe;
+    if(state && state.recipeId) {
+      recipe = (await axios.get(`/api/recipes/${state.recipeId}`)).data;
+    } else {
+      recipe = (await axios.get(`/api/recipes/${params.categoryKey}/${params.key}`)).data;
+    }
     const {
+      _id,
       name,
       key, 
       description, 
@@ -59,6 +67,7 @@ class RecipeEdit extends Component {
     } = recipe;
 
     this.setState({
+      _id,
       name,
       key, 
       description, 
@@ -82,13 +91,37 @@ class RecipeEdit extends Component {
   }
 
   updateValue(type, value) {
+    type === "name" && this.createKey(value);
+    this.setState({ [type]: value });
+  }
+
+  updateCategoryValues(label, value) {
     this.setState({
-      [type]: value,
+      "category": label,
+      "categoryKey": value
     });
+  }
+
+  createKey = title => {
+    if(title) {
+      const titleKey = title.replace(/\W+/g, '-').toLowerCase();
+      this.setState({"key": titleKey});
+      return titleKey;
+      // keyAvailability();
+    } else {
+      // vm.recipeKey = '';
+      // vm.keyIsAvailable = true;
+    }
+  }
+
+  createCategoryKey = category => {
+    return category.replace(/\W+/g, '-').toLowerCase();
+    // keyAvailability();
   }
 
   async submit() {
     const {
+      _id,
       name,
       key, 
       description, 
@@ -113,7 +146,7 @@ class RecipeEdit extends Component {
     this.setState({
       disabled: true,
     });
-    await axios.put(`http://localhost:3001/api/recipes/${categoryKey}/${key}/${this.props.match.params.recipeId}`, {
+    await axios.put(`/api/recipes/${categoryKey}/${key}/${_id}`, {
       name,
       key, 
       description, 
@@ -137,7 +170,7 @@ class RecipeEdit extends Component {
       headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
     });
 
-    this.props.history.push(`/recipes/view/${this.props.match.params.recipeId}`);
+    this.props.history.push(`/recipes/view/${categoryKey}/${key}`);
   }
 
   async deleteRecipe() {
@@ -145,7 +178,7 @@ class RecipeEdit extends Component {
       disabled: true,
     });
 
-    await axios.delete(`http://localhost:3001/api/recipes/${this.props.match.params.recipeId}`, {
+    await axios.delete(`/api/recipes/${this.state._id}`, {
       headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
     });
     this.props.history.push('/');
@@ -177,7 +210,7 @@ class RecipeEdit extends Component {
     } = this.state;
     return (
       <div className="create-recipe">
-        <h1><Link to="/">Recipes</Link> &raquo; <Link to={`/recipes/view/${this.props.match.params.recipeId}`}>{name}</Link> &raquo; Edit</h1>
+        <h1><Link to="/">Recipes</Link> &raquo; <Link to={`/recipes/view/${categoryKey}/${key}`}>{name}</Link> &raquo; Edit</h1>
         <hr />
         <form>
         <div className="form-group">
@@ -188,17 +221,6 @@ class RecipeEdit extends Component {
               onChange={(e) => {this.updateValue("name", e.target.value)}}
               placeholder="Recipe title"
               value={name}
-            />
-          </div>
-          <div className="form-group">
-            <label>Key:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={(e) => {this.updateValue("key", e.target.value)}}
-              placeholder="Unique number"
-              value={key}
-
             />
           </div>
           <div className="form-group">
@@ -213,23 +235,22 @@ class RecipeEdit extends Component {
           </div>
           <div className="form-group">
             <label>Category:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={(e) => {this.updateValue("category", e.target.value)}}
-              placeholder="Select a category"
-              value={category}
-            />
-          </div>
-          <div className="form-group">
-            <label>Category Key:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={(e) => {this.updateValue("categoryKey", e.target.value)}}
-              placeholder="Unique category number"
+            <select
+              onChange={(e) => {
+                this.updateCategoryValues(e.target[e.target.selectedIndex].innerHTML, e.target.value)
+              }}
               value={categoryKey}
-            />
+            >
+              <option value="">Select a category...</option>
+              {categories.map(category => (
+                <option
+                  key={category}
+                  value={this.createCategoryKey(category)}
+                >
+                  {category}
+                </option>
+              ))}
+            </select>
           </div>
           <div className="form-group">
             <label>Source:</label>
