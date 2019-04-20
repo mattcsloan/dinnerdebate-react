@@ -12,7 +12,6 @@ class Recipe extends Component {
 
   async componentDidMount() {
     const { match: { params }, location: { state } } = this.props;
-    console.log("props", this.props);
     let recipe;
     if(state && state.recipeId) {
       recipe = (await axios.get(`/api/recipes/${state.recipeId}`)).data;
