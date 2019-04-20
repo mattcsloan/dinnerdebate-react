@@ -137,7 +137,6 @@ module.exports = function(app) {
     // get individual recipe by id
     app.get('/api/recipes/:recipeId', function(req, res) {
         var recipeId = req.params.recipeId;
-        console.log("recipeId", recipeId);
         Recipes.findById(recipeId, function(err, recipe) {
             if (err) {
                 res.send(err);
