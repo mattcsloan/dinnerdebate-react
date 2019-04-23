@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import auth0Client from '../Authentication';
+import IngredientSet from '../IngredientSet';
 
 import categories from '../../data/recipeCategories';
 
@@ -35,6 +36,25 @@ class RecipeCreate extends Component {
     };
   }
 
+  componentDidMount() {
+    this.setState({
+      ingredients: [{
+        title: 'This is a test',
+        list: [
+          "½ small poblano chile pepper, seeded",
+          "3 tsp. extra-virgin olive oil",
+          "kosher salt",
+        ] 
+      }, {
+        title: 'A second list',
+        list: [
+          "stuff",
+          "more stuff here",
+        ] 
+      }]
+    })
+  }
+
   updateValue(type, value) {
     type === "name" && this.createKey(value);
     this.setState({ [type]: value });
@@ -62,6 +82,14 @@ class RecipeCreate extends Component {
   createCategoryKey = category => {
     return category.replace(/\W+/g, '-').toLowerCase();
     // keyAvailability();
+  }
+
+  addIngredient = (value, index) => {
+    const currentIngredients = this.state.ingredients;
+    currentIngredients[index].list.push(value);
+    this.setState({
+      ingredients: currentIngredients
+    })
   }
 
   async submit() {
@@ -97,7 +125,8 @@ class RecipeCreate extends Component {
       key, 
       description, 
       category, 
-      categoryKey, 
+      categoryKey,
+      date: new Date(),
       source, 
       sourceURL,
       addedBy,
@@ -121,18 +150,18 @@ class RecipeCreate extends Component {
 
   render() {
 
-    const { disabled } = this.state;
+    const { disabled, ingredients } = this.state;
     return (
       <div className="create-recipe">
         <h1>New Recipe</h1>
         <hr />
         <form>
-        <div className="form-group">
+          <div className="form-group">
             <label>Name:</label>
             <input
               disabled={disabled}
               type="text"
-              onChange={(e) => {this.updateValue("name", e.target.value)}}
+              onChange={e => this.updateValue("name", e.target.value)}
               placeholder="Recipe title"
             />
           </div>
@@ -141,7 +170,7 @@ class RecipeCreate extends Component {
             <input
               disabled={disabled}
               type="text"
-              onChange={(e) => {this.updateValue("description", e.target.value)}}
+              onChange={e => this.updateValue("description", e.target.value)}
               placeholder="Describe your recipe"
             />
           </div>
@@ -161,7 +190,7 @@ class RecipeCreate extends Component {
             <input
               disabled={disabled}
               type="text"
-              onChange={(e) => {this.updateValue("source", e.target.value)}}
+              onChange={e => this.updateValue("source", e.target.value)}
               placeholder="Name of recipe creator"
             />
           </div>
@@ -170,7 +199,7 @@ class RecipeCreate extends Component {
             <input
               disabled={disabled}
               type="text"
-              onChange={(e) => {this.updateValue("sourceURL", e.target.value)}}
+              onChange={e => this.updateValue("sourceURL", e.target.value)}
               placeholder="URL to recipe (if applicable)"
             />
           </div>
@@ -179,7 +208,7 @@ class RecipeCreate extends Component {
             <input
               disabled={disabled}
               type="text"
-              onChange={(e) => {this.updateValue("prepTime", e.target.value)}}
+              onChange={e => this.updateValue("prepTime", e.target.value)}
               placeholder=""
             />
           </div>
@@ -188,7 +217,7 @@ class RecipeCreate extends Component {
             <input
               disabled={disabled}
               type="text"
-              onChange={(e) => {this.updateValue("cookTime", e.target.value)}}
+              onChange={e => this.updateValue("cookTime", e.target.value)}
               placeholder=""
             />
           </div>
@@ -197,16 +226,46 @@ class RecipeCreate extends Component {
             <input
               disabled={disabled}
               type="text"
-              onChange={(e) => {this.updateValue("servings", e.target.value)}}
+              onChange={e => this.updateValue("servings", e.target.value)}
               placeholder=""
             />
           </div>
+
+          {ingredients && ingredients.map((ingredientList, index) => (
+            <div className="ingredient-group" key={`ingredient-group-${index}`}>
+              <div className="form-group">
+                <label>Ingredient Set Title:</label>
+                <input
+                  disabled={disabled}
+                  type="text"
+                  onChange={e => this.updateValue("servings", e.target.value)}
+                  placeholder=""
+                />
+              </div>
+              <IngredientSet title={ingredientList.title} ingredients={ingredientList.list} />
+              <div className="form-group">
+                <input
+                  disabled={disabled}
+                  type="text"
+                  onBlur={e => this.addIngredient(e.target.value, index)}
+                  placeholder="Add ingredient"
+                />
+              </div>
+              <button
+                disabled={disabled}
+                className="btn btn-primary"
+              >
+                Add
+              </button>
+            </div>
+          ))}
+          
           <div className="form-group">
             <label>Directions:</label>
             <textarea
               disabled={disabled}
               type="text"
-              onChange={(e) => {this.updateValue("directions", e.target.value)}}
+              onChange={e => this.updateValue("directions", e.target.value)}
               placeholder="Enter recipe directions"
             >
             </textarea>
@@ -221,6 +280,14 @@ class RecipeCreate extends Component {
         </form>
 
 
+      {/*TODO:
+      addedBy,
+      ingredients,
+      hints,
+      pairings,
+      image,
+      tags,
+      relatedItems */}
 
 
 

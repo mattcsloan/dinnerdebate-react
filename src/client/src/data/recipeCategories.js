@@ -1,4 +1,4 @@
-module.exports = [
+export const categories = [
   "Appetizers",
   "Breads and Muffins",
   "Breakfast",
