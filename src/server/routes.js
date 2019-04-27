@@ -115,7 +115,6 @@ module.exports = function(app) {
                     ingredients: req.body.ingredients,
                     directions: req.body.directions,
                     hints: req.body.hints,
-                    pairings: req.body.pairings,
                     image: req.body.image,
                     servings: req.body.servings,
                     tags: req.body.tags,
@@ -197,7 +196,6 @@ module.exports = function(app) {
                         recipe.ingredients = req.body.ingredients;
                         recipe.directions = req.body.directions;
                         recipe.hints = req.body.hints;
-                        recipe.pairings = req.body.pairings;
                         recipe.image = req.body.image;
                         recipe.servings = req.body.servings;
                         recipe.tags = req.body.tags;

@@ -21,7 +21,6 @@ module.exports = mongoose.model('Recipes', {
     }],
     directions : {type : String, default: ''},
     hints : {type : Array, default: []},
-    pairings : {type : Array, default: []},
     image : {
         url: {type : String, default: ''},
         width: {type : Number, default: ''},
