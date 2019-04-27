@@ -41,6 +41,17 @@ button,
     text-decoration: none;
     cursor: pointer;
   }
+
+  &.btn-link {
+    background: transparent;
+    color: #b13fa3;
+    box-shadow: none;
+
+    &:hover {
+      color: #421b52;
+      text-decoration: underline;
+    }
+  }
 }
 
 h1 {

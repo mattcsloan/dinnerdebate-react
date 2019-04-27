@@ -37,19 +37,11 @@ class RecipeCreate extends Component {
   }
 
   componentDidMount() {
+    // Move to defaultProps
     this.setState({
       ingredients: [{
-        title: 'This is a test',
+        title: '',
         list: [
-          "½ small poblano chile pepper, seeded",
-          "3 tsp. extra-virgin olive oil",
-          "kosher salt",
-        ] 
-      }, {
-        title: 'A second list',
-        list: [
-          "stuff",
-          "more stuff here",
         ] 
       }]
     })
@@ -85,11 +77,26 @@ class RecipeCreate extends Component {
   }
 
   addIngredient = (value, index) => {
+    if(value !== '') {
+      const currentIngredients = this.state.ingredients;
+      currentIngredients[index].list.push(value);
+      this.setState({
+        ingredients: currentIngredients
+      });
+    }
+  }
+
+  addIngredientSet = () => {
     const currentIngredients = this.state.ingredients;
-    currentIngredients[index].list.push(value);
+    currentIngredients.push({
+      title: '',
+      list: []
+    });
+
     this.setState({
       ingredients: currentIngredients
     })
+
   }
 
   async submit() {
@@ -233,15 +240,18 @@ class RecipeCreate extends Component {
 
           {ingredients && ingredients.map((ingredientList, index) => (
             <div className="ingredient-group" key={`ingredient-group-${index}`}>
-              <div className="form-group">
-                <label>Ingredient Set Title:</label>
-                <input
-                  disabled={disabled}
-                  type="text"
-                  onChange={e => this.updateValue("servings", e.target.value)}
-                  placeholder=""
-                />
-              </div>
+              {ingredients.length > 1 && (
+                <div className="form-group">
+                  <label>Ingredient Set Title:</label>
+                  <input
+                    disabled={disabled}
+                    type="text"
+                    onChange={e => {}}
+                    placeholder=""
+                  />
+                </div>
+              )}
+              <h3>{ingredients.length > 1 ? ingredientList.title : 'Ingredients'}</h3>
               <IngredientSet title={ingredientList.title} ingredients={ingredientList.list} />
               <div className="form-group">
                 <input
@@ -252,13 +262,23 @@ class RecipeCreate extends Component {
                 />
               </div>
               <button
+                type="button"
                 disabled={disabled}
                 className="btn btn-primary"
               >
-                Add
+                Add Ingredient
               </button>
             </div>
           ))}
+
+          <button
+            type="button"
+            disabled={disabled}
+            className="btn btn-link"
+            onClick={this.addIngredientSet}
+          >
+            Add New Set of Ingredients
+          </button>
           
           <div className="form-group">
             <label>Directions:</label>
