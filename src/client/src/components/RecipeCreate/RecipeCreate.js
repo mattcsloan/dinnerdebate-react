@@ -27,7 +27,6 @@ class RecipeCreate extends Component {
       ingredients: [],
       directions: '',
       hints: [],
-      pairings: [],
       image: {},
       servings: '',
       tags: [],
@@ -99,6 +98,17 @@ class RecipeCreate extends Component {
 
   }
 
+  addHint = value => {
+    if(value !== '') {
+      const currentHints = this.state.hints;
+      currentHints.push(value);
+      this.setState({
+        hints: currentHints
+      });
+    }
+  }
+
+
   async submit() {
 
     const {
@@ -115,7 +125,6 @@ class RecipeCreate extends Component {
       ingredients,
       directions,
       hints,
-      pairings,
       image,
       servings,
       tags,
@@ -142,7 +151,6 @@ class RecipeCreate extends Component {
       ingredients,
       directions,
       hints,
-      pairings,
       image,
       servings,
       tags,
@@ -157,89 +165,89 @@ class RecipeCreate extends Component {
 
   render() {
 
-    const { disabled, ingredients } = this.state;
+    const { disabled, ingredients, hints } = this.state;
     return (
       <div className="create-recipe">
         <h1>New Recipe</h1>
         <hr />
-        <form>
-          <div className="form-group">
-            <label>Name:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={e => this.updateValue("name", e.target.value)}
-              placeholder="Recipe title"
-            />
-          </div>
-          <div className="form-group">
-            <label>Description:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={e => this.updateValue("description", e.target.value)}
-              placeholder="Describe your recipe"
-            />
-          </div>
-          <div className="form-group">
-            <label>Category:</label>
-            <select
-              onChange={(e) => {
-                this.updateCategoryValues(e.target[e.target.selectedIndex].innerHTML, e.target.value)
-              }}
-            >
-              <option value="">Select a category...</option>
-              {categories.map(category => <option key={category} value={this.createCategoryKey(category)}>{category}</option>)}
-            </select>
-          </div>
-          <div className="form-group">
-            <label>Source:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={e => this.updateValue("source", e.target.value)}
-              placeholder="Name of recipe creator"
-            />
-          </div>
-          <div className="form-group">
-            <label>Source URL:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={e => this.updateValue("sourceURL", e.target.value)}
-              placeholder="URL to recipe (if applicable)"
-            />
-          </div>
-          <div className="form-group">
-            <label>Prep Time:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={e => this.updateValue("prepTime", e.target.value)}
-              placeholder=""
-            />
-          </div>
-          <div className="form-group">
-            <label>Cook Time:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={e => this.updateValue("cookTime", e.target.value)}
-              placeholder=""
-            />
-          </div>
-          <div className="form-group">
-            <label>Servings:</label>
-            <input
-              disabled={disabled}
-              type="text"
-              onChange={e => this.updateValue("servings", e.target.value)}
-              placeholder=""
-            />
-          </div>
+        <div className="form-group">
+          <label>Name:</label>
+          <input
+            disabled={disabled}
+            type="text"
+            onChange={e => this.updateValue("name", e.target.value)}
+            placeholder="Recipe title"
+          />
+        </div>
+        <div className="form-group">
+          <label>Description:</label>
+          <input
+            disabled={disabled}
+            type="text"
+            onChange={e => this.updateValue("description", e.target.value)}
+            placeholder="Describe your recipe"
+          />
+        </div>
+        <div className="form-group">
+          <label>Category:</label>
+          <select
+            onChange={(e) => {
+              this.updateCategoryValues(e.target[e.target.selectedIndex].innerHTML, e.target.value)
+            }}
+          >
+            <option value="">Select a category...</option>
+            {categories.map(category => <option key={category} value={this.createCategoryKey(category)}>{category}</option>)}
+          </select>
+        </div>
+        <div className="form-group">
+          <label>Source:</label>
+          <input
+            disabled={disabled}
+            type="text"
+            onChange={e => this.updateValue("source", e.target.value)}
+            placeholder="Name of recipe creator"
+          />
+        </div>
+        <div className="form-group">
+          <label>Source URL:</label>
+          <input
+            disabled={disabled}
+            type="text"
+            onChange={e => this.updateValue("sourceURL", e.target.value)}
+            placeholder="URL to recipe (if applicable)"
+          />
+        </div>
+        <div className="form-group">
+          <label>Prep Time:</label>
+          <input
+            disabled={disabled}
+            type="text"
+            onChange={e => this.updateValue("prepTime", e.target.value)}
+            placeholder=""
+          />
+        </div>
+        <div className="form-group">
+          <label>Cook Time:</label>
+          <input
+            disabled={disabled}
+            type="text"
+            onChange={e => this.updateValue("cookTime", e.target.value)}
+            placeholder=""
+          />
+        </div>
+        <div className="form-group">
+          <label>Servings:</label>
+          <input
+            disabled={disabled}
+            type="text"
+            onChange={e => this.updateValue("servings", e.target.value)}
+            placeholder=""
+          />
+        </div>
 
-          {ingredients && ingredients.map((ingredientList, index) => (
-            <div className="ingredient-group" key={`ingredient-group-${index}`}>
+        {ingredients && ingredients.map((ingredientList, index) => (
+          <form key={`ingredient-group-${index}`}>
+            <div className="ingredient-group">
               {ingredients.length > 1 && (
                 <div className="form-group">
                   <label>Ingredient Set Title:</label>
@@ -269,42 +277,58 @@ class RecipeCreate extends Component {
                 Add Ingredient
               </button>
             </div>
-          ))}
 
-          <button
-            type="button"
+          </form>
+        ))}
+
+        <button
+          type="button"
+          disabled={disabled}
+          className="btn btn-link"
+          onClick={this.addIngredientSet}
+        >
+          Add New Set of Ingredients
+        </button>
+        
+        <div className="form-group">
+          <label>Directions:</label>
+          <textarea
             disabled={disabled}
-            className="btn btn-link"
-            onClick={this.addIngredientSet}
+            onChange={e => this.updateValue("directions", e.target.value)}
+            placeholder="Enter recipe directions"
           >
-            Add New Set of Ingredients
-          </button>
-          
-          <div className="form-group">
-            <label>Directions:</label>
-            <textarea
+          </textarea>
+        </div>
+
+        <div className="form-group">
+          <label>Hint:</label>
+          <div className="hints">
+            {hints && hints.map(hint => (
+              <div className="hint">
+                {hint}
+              </div>
+            ))}
+            <input
               disabled={disabled}
               type="text"
-              onChange={e => this.updateValue("directions", e.target.value)}
-              placeholder="Enter recipe directions"
-            >
-            </textarea>
+              onBlur={e => this.addHint(e.target.value)}
+              placeholder="Add special note/hint"
+            />
           </div>
-          <button
-            disabled={disabled}
-            className="btn btn-primary"
-            onClick={() => {this.submit()}}
-          >
-            Create Recipe
-          </button>
-        </form>
+        </div>
+        <button
+          disabled={disabled}
+          className="btn btn-primary"
+          onClick={() => {this.submit()}}
+        >
+          Create Recipe
+        </button>
 
 
       {/*TODO:
       addedBy,
       ingredients,
       hints,
-      pairings,
       image,
       tags,
       relatedItems */}
