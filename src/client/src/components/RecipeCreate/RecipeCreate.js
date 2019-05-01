@@ -31,7 +31,8 @@ class RecipeCreate extends Component {
       servings: '',
       tags: [],
       featured: false,
-      relatedItems: []
+      relatedItems: [],
+      editHintNum: null,
     };
   }
 
@@ -99,8 +100,8 @@ class RecipeCreate extends Component {
   }
 
   addHint = value => {
-    if(value !== '') {
-      const currentHints = this.state.hints;
+    const currentHints = this.state.hints;
+    if(value !== '' && currentHints.indexOf(value) === -1) {
       currentHints.push(value);
       this.setState({
         hints: currentHints
@@ -108,6 +109,31 @@ class RecipeCreate extends Component {
     }
   }
 
+  enterEditHintMode = itemIndex => {
+    this.setState({
+      editHintNum: itemIndex
+    })
+  }
+
+  editHint = (itemIndex, value) => {
+    const currentHints = this.state.hints;
+    // check first to see if value already exists in array
+    if(currentHints.indexOf(value) === -1) {
+      currentHints.splice(itemIndex, 1, value);
+      this.setState({
+        hints: currentHints,
+        editHintNum: null
+      });
+    }
+  }
+
+  removeHint = item => {
+    const currentHints = this.state.hints;
+    currentHints.splice(item, 1);
+    this.setState({
+      hints: currentHints
+    });
+  }
 
   async submit() {
 
@@ -165,7 +191,7 @@ class RecipeCreate extends Component {
 
   render() {
 
-    const { disabled, ingredients, hints } = this.state;
+    const { disabled, ingredients, hints, editHintNum } = this.state;
     return (
       <div className="create-recipe">
         <h1>New Recipe</h1>
@@ -303,9 +329,22 @@ class RecipeCreate extends Component {
         <div className="form-group">
           <label>Hint:</label>
           <div className="hints">
-            {hints && hints.map(hint => (
-              <div className="hint">
-                {hint}
+            {hints && hints.map((hint, index) => (
+              <div className="hint" key={`hint-${index}`}>
+                {editHintNum === index ? (
+                  <input
+                    disabled={disabled}
+                    type="text"
+                    defaultValue={hint}
+                    onBlur={e => this.editHint(index, e.target.value)}
+                  />
+                ) : (
+                  <span>{hint}</span>
+                )}
+
+                <a onClick={() => this.enterEditHintMode(index)}>Edit</a>
+                <a onClick={() => this.removeHint(index)}>X</a>
+
               </div>
             ))}
             <input
