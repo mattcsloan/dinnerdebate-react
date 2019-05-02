@@ -135,6 +135,24 @@ class RecipeCreate extends Component {
     });
   }
 
+  addTag = value => {
+    const currentTags = this.state.tags;
+    if(value !== '' && currentTags.indexOf(value) === -1) {
+      currentTags.push(value);
+      this.setState({
+        tags: currentTags
+      });
+    }
+  }
+
+  removeTag = item => {
+    const currentTags = this.state.tags;
+    currentTags.splice(item, 1);
+    this.setState({
+      tags: currentTags
+    });
+  }
+
   async submit() {
 
     const {
@@ -191,7 +209,14 @@ class RecipeCreate extends Component {
 
   render() {
 
-    const { disabled, ingredients, hints, editHintNum } = this.state;
+    const { 
+      disabled, 
+      ingredients, 
+      hints, 
+      editHintNum, 
+      tags, 
+    } = this.state;
+
     return (
       <div className="create-recipe">
         <h1>New Recipe</h1>
@@ -341,10 +366,8 @@ class RecipeCreate extends Component {
                 ) : (
                   <span>{hint}</span>
                 )}
-
                 <a onClick={() => this.enterEditHintMode(index)}>Edit</a>
                 <a onClick={() => this.removeHint(index)}>X</a>
-
               </div>
             ))}
             <input
@@ -355,6 +378,26 @@ class RecipeCreate extends Component {
             />
           </div>
         </div>
+
+        <div className="form-group">
+          <label>Tags:</label>
+          <div className="tags">
+            {tags && tags.map((tag, index) => (
+              <div className="tag" key={`tag-${index}`}>
+                <span>{tag}</span>
+                <a onClick={() => this.removeTag(index)}>X</a>
+              </div>
+            ))}
+          </div>
+          <input
+            disabled={disabled}
+            type="text"
+            onBlur={e => this.addTag(e.target.value)}
+            placeholder="Add tag(s)"
+          />
+        </div>
+
+
         <button
           disabled={disabled}
           className="btn btn-primary"
@@ -367,9 +410,7 @@ class RecipeCreate extends Component {
       {/*TODO:
       addedBy,
       ingredients,
-      hints,
       image,
-      tags,
       relatedItems */}
 
 
