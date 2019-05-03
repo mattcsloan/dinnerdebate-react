@@ -381,14 +381,6 @@ class RecipeCreate extends Component {
 
         <div className="form-group">
           <label>Tags:</label>
-          <div className="tags">
-            {tags && tags.map((tag, index) => (
-              <div className="tag" key={`tag-${index}`}>
-                <span>{tag}</span>
-                <a onClick={() => this.removeTag(index)}>X</a>
-              </div>
-            ))}
-          </div>
           <input
             disabled={disabled}
             type="text"
@@ -396,7 +388,14 @@ class RecipeCreate extends Component {
             placeholder="Add tag(s)"
           />
         </div>
-
+        <div className="tags">
+          {tags && tags.map((tag, index) => (
+            <div className="tag" key={`tag-${index}`}>
+              <span>{tag}</span>
+              <a onClick={() => this.removeTag(index)}>X</a>
+            </div>
+          ))}
+        </div>
 
         <button
           disabled={disabled}
