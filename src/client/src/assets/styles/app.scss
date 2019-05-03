@@ -41,6 +41,17 @@ button,
     text-decoration: none;
     cursor: pointer;
   }
+
+  &.btn-link {
+    background: transparent;
+    color: #b13fa3;
+    box-shadow: none;
+
+    &:hover {
+      color: #421b52;
+      text-decoration: underline;
+    }
+  }
 }
 
 h1 {
@@ -109,9 +120,43 @@ li {
   margin: 0 0 24px 0;
   display: flex;
 
+  &.vertical {
+    flex-direction: column;
+  }
+
   label {
     margin-right: 16px;
     min-width: 160px;
+  }
+}
+
+.hint {
+  padding: 12px 16px;
+  line-height: 1em;
+  background: #d9edf7;
+  color: #31708f;
+  border-radius: 4px;
+  margin: 0 0 16px 0;
+  display: block;
+}
+
+.tags {
+  display: block;
+}
+
+.tag {
+  padding: 6px 8px;
+  line-height: 1em;
+  background: #fff;
+  color: #421b52;
+  border-radius: 4px;
+  margin: 0 8px 16px 0;
+  display: inline-block;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+
+  a {
+    margin-left: 8px;
+    cursor: pointer;
   }
 }
 
