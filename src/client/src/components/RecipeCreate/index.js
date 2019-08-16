@@ -1,3 +1,15 @@
+import { connect } from 'react-redux';
 import RecipeCreate from './RecipeCreate';
 
-export default RecipeCreate;
+const mapStateToProps = state => {
+  return {}
+};
+
+const mapDispatchToProps = dispatch => {
+  return {}
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RecipeCreate);

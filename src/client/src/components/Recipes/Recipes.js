@@ -23,6 +23,10 @@ class Recipes extends Component {
       <div className="container">
         <h1>Recipes</h1>
         <hr />
+
+        <button>Click Me!</button>
+        
+
         {this.state.recipes === null && <p>Loading recipes...</p>}
         {
           this.state.recipes && this.state.recipes.map(recipe => (
