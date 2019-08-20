@@ -1,12 +1,15 @@
 const initialState = {
   recipes: [],
-  buttonState: true
+  title: ''
 }
 
 const mainReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "TOGGLE_BUTTON_STATE":
-      return !state.buttonState;
+    case "UPDATE_TITLE":
+      return {
+        ...state,
+        title: action.title
+      };
     default:
       return state
   }

@@ -1,6 +1,16 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { updateTitle } from '../../actions';
+
+const mapStateToProps = state => ({
+  title: state.title
+ });
+
+const mapDispatchToProps = dispatch => ({
+  updateTitle: title => dispatch(updateTitle(title))
+ });
 
 class Recipes extends Component {
   constructor(props) {
@@ -8,6 +18,7 @@ class Recipes extends Component {
 
     this.state = {
       recipes: null,
+      inputtedTitle: ''
     };
   }
 
@@ -18,13 +29,28 @@ class Recipes extends Component {
     });
   }
 
+  updateTitle = e => {
+    e.preventDefault();
+    this.props.updateTitle(this.state.inputtedTitle);
+    this.setState({ inputtedTitle: '' });
+   }
+
+   updateValue = e => {
+     this.setState({ inputtedTitle: e.target.value });
+   }
+
   render() {
+    const { title } = this.props;
+
     return (
       <div className="container">
         <h1>Recipes</h1>
         <hr />
-
-        <button>Click Me!</button>
+        <form onSubmit={this.updateTitle}>
+          <input type="text" onChange={this.updateValue} value={this.state.inputtedTitle} placeholder="Enter Title" />
+          <button onClick={this.updateTitle}>Change Title!</button>
+        </form>
+        {title && <h1>{title}</h1>}
         
 
         {this.state.recipes === null && <p>Loading recipes...</p>}
@@ -47,4 +73,4 @@ class Recipes extends Component {
   }
 }
 
-export default Recipes;
+export default connect(mapStateToProps, mapDispatchToProps)(Recipes);
