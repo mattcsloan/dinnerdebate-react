@@ -3,22 +3,27 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import './index.css';
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
+import { createStore, compose } from 'redux';
 import mainReducer from './reducer';
 import App from './App';
+import DevTools from './components/DevTools';
 import * as serviceWorker from './serviceWorker';
 
-const store = createStore(mainReducer);
+const isProduction = process.env.NODE_ENV === 'production';
+const enhancer = compose(DevTools.instrument());
+
+const store = createStore(mainReducer, enhancer);
+
 
 ReactDOM.render(
   <Provider store={store}>
     <BrowserRouter>
-      <App />
+      <>
+        <App />
+        {!isProduction && <DevTools />}
+      </>
     </BrowserRouter>
   </Provider>
 , document.getElementById('root'));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
 serviceWorker.unregister();
