@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import axios from 'axios';
 
 import auth0Client from '../Authentication';
@@ -7,7 +7,7 @@ import IngredientSet from '../IngredientSet';
 
 import categories from '../../data/recipeCategories';
 
-class RecipeCreate extends Component {
+class RecipeAdmin extends Component {
   constructor(props) {
     super(props);
 
@@ -36,7 +36,7 @@ class RecipeCreate extends Component {
     };
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // Move to defaultProps
     this.setState({
       ingredients: [{
@@ -44,7 +44,20 @@ class RecipeCreate extends Component {
         list: [
         ] 
       }]
-    })
+    });
+
+
+      const { match: { params }, recipe } = this.props;
+
+      console.log("params", params);
+      // Recipe does not exist in store, so get it and add to store 
+      // if(!recipe) {
+      //   await axios.get(`/api/recipes/${params.categoryKey}/${params.key}`)
+      //     .then(response => {
+      //       this.props.setRecipe(response.data);
+      //     })
+      // }
+  
   }
 
   updateValue(type, value) {
@@ -180,7 +193,7 @@ class RecipeCreate extends Component {
       disabled: true,
     });
 
-    await axios.post('/api/recipes', {
+    const fullRecipe = {
       name,
       key, 
       description, 
@@ -200,11 +213,24 @@ class RecipeCreate extends Component {
       tags,
       featured,
       relatedItems
-    }, {
-      headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
-    });
+    };
 
-    this.props.history.push('/');
+    await axios.post('/api/recipes',
+      fullRecipe, {
+      headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
+    })
+      .then(response => {
+        if(response.statusText === 'Created') {
+          this.props.createRecipe(response.data);
+
+          const { categoryKey, key, _id } = response.data;
+
+          this.props.history.push({
+            pathname: `/recipes/view/${categoryKey}/${key}`,
+            state: { recipeId: _id }
+          });
+        }
+      });
   }
 
   render() {
@@ -408,7 +434,6 @@ class RecipeCreate extends Component {
 
       {/*TODO:
       addedBy,
-      ingredients,
       image,
       relatedItems */}
 
@@ -420,4 +445,4 @@ class RecipeCreate extends Component {
   }
 }
 
-export default withRouter(RecipeCreate);
+export default withRouter(RecipeAdmin);

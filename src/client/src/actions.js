@@ -18,3 +18,10 @@ export const updateTitle = title => {
    recipe
   }
  }
+
+ export const createRecipe = recipe => {
+  return {
+   type: 'CREATE_RECIPE',
+   recipe
+  }
+ }

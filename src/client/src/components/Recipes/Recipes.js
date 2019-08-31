@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 class Recipes extends Component {
+
+  async componentDidMount() {
+    const { recipes, setRecipes } = this.props;
+    if(recipes.length <= 1) {
+      // Load initial recipes from db
+      const recipes = (await axios.get('/api/recipes')).data;
+      setRecipes(recipes);
+    }
+  }
+
   render() {
     const { recipes } = this.props;
 

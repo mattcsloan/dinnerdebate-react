@@ -9,16 +9,24 @@ const mainReducer = (state = initialState, action) => {
         ...state,
         recipes: action.recipes
       };
-    case "SET_RECIPE":
-      return {
-        ...state,
-        recipes: [
-          ...state.recipes,
-          action.recipe
-        ]
-      };
-    default:
-      return state
+      case "SET_RECIPE":
+        return {
+          ...state,
+          recipes: [
+            ...state.recipes,
+            action.recipe
+          ]
+        };
+      case "CREATE_RECIPE":
+        return {
+          ...state,
+          recipes: [
+            ...state.recipes,
+            action.recipe
+          ]
+        };
+      default:
+        return state
   }
 }
 
