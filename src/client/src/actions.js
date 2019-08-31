@@ -4,3 +4,17 @@ export const updateTitle = title => {
    title
   }
  }
+
+ export const setRecipes = recipes => {
+  return {
+   type: 'SET_RECIPES',
+   recipes
+  }
+ }
+
+ export const setRecipe = recipe => {
+  return {
+   type: 'SET_RECIPE',
+   recipe
+  }
+ }

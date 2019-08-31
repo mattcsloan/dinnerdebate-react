@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import axios from 'axios';
+import { setRecipes } from './actions';
+
 import { Route, withRouter } from 'react-router-dom';
 import auth0Client from './components/Authentication';
 import Navigation from './components/Navigation';
@@ -11,6 +15,12 @@ import RecipeEdit from './components/RecipeEdit';
 
 import './assets/styles/app.scss';
 
+const mapStateToProps = state => ({});
+
+const mapDispatchToProps = dispatch => ({
+  setRecipes: recipes => dispatch(setRecipes(recipes))
+});
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -20,7 +30,8 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    if (this.props.location.pathname === '/callback') {
+    const { location, setRecipes } = this.props;
+    if (location.pathname === '/callback') {
       this.setState({checkingSession:false});
       return;
     }
@@ -31,6 +42,10 @@ class App extends Component {
       if (err.error !== 'login_required') console.log(err.error);
     }
     this.setState({checkingSession:false});
+
+    // Load initial recipes from db
+    const recipes = (await axios.get('/api/recipes')).data;
+    setRecipes(recipes);
   }
 
   render() {
@@ -42,7 +57,7 @@ class App extends Component {
           <Route
             exact
             path='/' 
-            component={Recipes} 
+            render={() => <Recipes />} 
           />
           <SecuredRoute 
             exact 
@@ -53,7 +68,7 @@ class App extends Component {
           <Route 
             exact 
             path='/recipes/view/:categoryKey/:key' 
-            component={Recipe} 
+            render={() => <Recipe />} 
           />
           <SecuredRoute 
             exact 
@@ -72,4 +87,4 @@ class App extends Component {
   }
 }
 
-export default withRouter(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

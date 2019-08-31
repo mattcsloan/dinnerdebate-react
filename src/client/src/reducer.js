@@ -1,14 +1,21 @@
 const initialState = {
   recipes: [],
-  title: ''
 }
 
 const mainReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "UPDATE_TITLE":
+    case "SET_RECIPES":
       return {
         ...state,
-        title: action.title
+        recipes: action.recipes
+      };
+    case "SET_RECIPE":
+      return {
+        ...state,
+        recipes: [
+          ...state.recipes,
+          action.recipe
+        ]
       };
     default:
       return state
