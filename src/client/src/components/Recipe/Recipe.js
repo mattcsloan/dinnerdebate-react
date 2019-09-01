@@ -23,10 +23,17 @@ class Recipe extends Component {
         <h1><Link to="/">Recipes</Link> &raquo; {recipe.name}</h1>
 
         <hr />
-        <p>{recipe.description}</p>
-        <p><strong>Category:</strong> {recipe.category}</p>
-        <p><strong>Prep Time:</strong> {recipe.prepTime}</p>
-        <p><strong>Cook Time:</strong> {recipe.cookTime}</p>
+        {recipe.description && <p>{recipe.description}</p>}
+        {recipe.category && <p><strong>Category:</strong> {recipe.category}</p>}
+        {recipe.prepTime && <p><strong>Prep Time:</strong> {recipe.prepTime}</p>}
+        {recipe.cookTime && <p><strong>Cook Time:</strong> {recipe.cookTime}</p>}
+        {recipe.servings && <p><strong>Servings:</strong> {recipe.servings}</p>}
+        {recipe.source || recipe.sourceURL &&
+          <p><strong>Source:</strong> {recipe.sourceURL && recipe.sourceURL !== '' 
+            ? (<a href={recipe.sourceURL} target="_blank">{recipe.source ? recipe.source : recipe.sourceURL}</a>)
+            : recipe.source
+          }</p>
+        }
         {recipe.ingredients && recipe.ingredients.map((ingredientList, index) => (
           <div key={index}>
             <h3>{ingredientList.title}</h3>
@@ -37,6 +44,28 @@ class Recipe extends Component {
             </ul>
           </div>
         ))}
+        {recipe.directions && <p>{recipe.directions}</p>}
+        {recipe.hints && recipe.hints.map((hint, index) => (
+          <div className="hint" key={`hint-${index}`}>
+              <span>{hint}</span>
+          </div>
+        ))}
+        {recipe.tags && 
+          <div className="tags">
+            {recipe.tags.map((tag, index) => (
+              <div className="tag" key={`tag-${index}`}>
+                <span>{tag}</span>
+              </div>
+            ))}
+          </div>
+        }
+
+        {/* 
+          TODO:
+            addedBy,
+            image,
+            relatedItems
+        */}
 
         <Link
           to={{

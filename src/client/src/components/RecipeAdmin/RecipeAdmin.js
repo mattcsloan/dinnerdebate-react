@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 
 import auth0Client from '../Authentication';
@@ -34,7 +34,6 @@ class RecipeAdmin extends Component {
       image: {},
       servings: '',
       tags: [],
-      featured: false,
       relatedItems: [],
       editHintNum: null,
     };
@@ -63,7 +62,6 @@ class RecipeAdmin extends Component {
         image,
         servings,
         tags,
-        featured,
         relatedItems
       } = recipe;  
 
@@ -85,7 +83,6 @@ class RecipeAdmin extends Component {
         image,
         servings,
         tags,
-        featured,
         relatedItems
       });  
     }
@@ -127,7 +124,6 @@ class RecipeAdmin extends Component {
             image,
             servings,
             tags,
-            featured,
             relatedItems
           } = response.data;
       
@@ -149,7 +145,6 @@ class RecipeAdmin extends Component {
             image,
             servings,
             tags,
-            featured,
             relatedItems
           });        
         } else {
@@ -267,7 +262,6 @@ class RecipeAdmin extends Component {
 
   async submit() {
     const {
-      _id,
       name,
       key, 
       description, 
@@ -284,7 +278,6 @@ class RecipeAdmin extends Component {
       image,
       servings,
       tags,
-      featured,
       relatedItems
     } = this.state;
 
@@ -310,7 +303,6 @@ class RecipeAdmin extends Component {
       image,
       servings,
       tags,
-      featured,
       relatedItems
     };
 
@@ -389,29 +381,26 @@ class RecipeAdmin extends Component {
     const {
       disabled,
       name,
-      key, 
       description, 
-      category, 
       categoryKey, 
       source, 
       sourceURL,
-      addedBy,
+      // addedBy,
       prepTime,
       cookTime,
       ingredients,
       directions,
       hints,
       editHintNum,
-      image,
+      // image,
       servings,
       tags,
-      featured,
-      relatedItems
+      // relatedItems
     } = this.state;
 
     return (
       <div className="recipe-admin">
-        <h1>New Recipe</h1>
+        <h1>{this.isExistingRecipe() ? `Update Recipe: ${this.props.recipe && this.props.recipe.name}` : 'Add New Recipe'}</h1>
         <hr />
         <div className="form-group">
           <label>Name:</label>
@@ -569,8 +558,8 @@ class RecipeAdmin extends Component {
                 ) : (
                   <span>{hint}</span>
                 )}
-                <a onClick={() => this.enterEditHintMode(index)}>Edit</a>
-                <a onClick={() => this.removeHint(index)}>X</a>
+                <button className="anchor" onClick={() => this.enterEditHintMode(index)}>Edit</button>
+                <button className="anchor" onClick={() => this.removeHint(index)}>X</button>
               </div>
             ))}
             <input
@@ -595,7 +584,7 @@ class RecipeAdmin extends Component {
           {tags && tags.map((tag, index) => (
             <div className="tag" key={`tag-${index}`}>
               <span>{tag}</span>
-              <a onClick={() => this.removeTag(index)}>X</a>
+              <button className="anchor" onClick={() => this.removeTag(index)}>X</button>
             </div>
           ))}
         </div>

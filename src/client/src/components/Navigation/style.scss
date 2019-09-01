@@ -12,7 +12,8 @@
     align-items: center;
   }
 
-  a {
+  a,
+  button {
     color: #fff;
     padding: 30px 20px;
     font-weight: 600;
@@ -22,6 +23,7 @@
     &:hover {
       background: #2f103b;
       color: #b13fa3;
+      text-decoration: none;
       cursor: pointer;
     }
   }
