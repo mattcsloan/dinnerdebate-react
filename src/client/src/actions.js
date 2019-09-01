@@ -1,10 +1,3 @@
-export const updateTitle = title => {
-  return {
-   type: 'UPDATE_TITLE',
-   title
-  }
- }
-
  export const setRecipes = recipes => {
   return {
    type: 'SET_RECIPES',
@@ -22,6 +15,14 @@ export const updateTitle = title => {
  export const createRecipe = recipe => {
   return {
    type: 'CREATE_RECIPE',
+   recipe
+  }
+ }
+
+ export const updateRecipe = (recipe, id) => {
+  return {
+   type: 'UPDATE_RECIPE',
+   id,
    recipe
   }
  }

@@ -33,6 +33,10 @@ button,
   
   &.btn-warning {
     background: #cc0000;
+
+    &:hover {
+      background: #ff0000;
+    }
   }
 
   &:hover {
@@ -51,6 +55,11 @@ button,
       color: #421b52;
       text-decoration: underline;
     }
+  }
+
+  &.btn-small {
+    padding: 8px 16px;
+    font-size: 14px;  
   }
 }
 
@@ -127,6 +136,11 @@ li {
   label {
     margin-right: 16px;
     min-width: 160px;
+  }
+
+  button {
+    margin: 0;
+    border-radius: 0 4px 4px 0;
   }
 }
 

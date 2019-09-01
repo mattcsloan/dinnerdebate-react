@@ -25,6 +25,16 @@ const mainReducer = (state = initialState, action) => {
             action.recipe
           ]
         };
+      case "UPDATE_RECIPE":
+        const recipeToUpdate = state.recipes.findIndex(recipe => recipe._id === action.id);
+        return {
+          ...state,
+          recipes: [
+            ...state.recipes.slice(0,recipeToUpdate),
+            action.recipe,
+            ...state.recipes.slice(recipeToUpdate+1)
+          ]
+        };
       default:
         return state
   }

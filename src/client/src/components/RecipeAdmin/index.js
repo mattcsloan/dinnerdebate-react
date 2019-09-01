@@ -1,14 +1,24 @@
 import { connect } from 'react-redux';
-import { createRecipe } from './../../actions';
+import { withRouter } from 'react-router';
+import { setRecipe, createRecipe, updateRecipe } from './../../actions';
 
 import RecipeAdmin from './RecipeAdmin';
 
-const mapStateToProps = state => {
-  return {}
+const mapStateToProps = (state, ownProps) => {
+  const { location } = ownProps;
+  let recipe = null;
+  if(location && location.state && location.state.recipeId) {
+    recipe = state.recipes.find(recipe => recipe._id === location.state.recipeId);
+  }
+  return ({
+    recipe
+  })
 };
 
 const mapDispatchToProps = dispatch => ({
-  createRecipe: recipe => dispatch(createRecipe(recipe))
+  setRecipe: recipe => dispatch(setRecipe(recipe)),
+  createRecipe: recipe => dispatch(createRecipe(recipe)),
+  updateRecipe: (recipe, id) => dispatch(updateRecipe(recipe, id))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RecipeAdmin);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(RecipeAdmin));

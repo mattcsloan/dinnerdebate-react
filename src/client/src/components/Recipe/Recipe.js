@@ -39,7 +39,10 @@ class Recipe extends Component {
         ))}
 
         <Link
-          to={`/recipes/edit/${params.categoryKey}/${params.key}`}
+          to={{
+            pathname: `/recipes/edit/${params.categoryKey}/${params.key}`,
+            state: { recipeId: recipe._id }
+          }}
           className="btn"
         >
           Edit Recipe

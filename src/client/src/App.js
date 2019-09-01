@@ -8,7 +8,6 @@ import Recipe from './components/Recipe';
 import Callback from './components/Callback';
 import SecuredRoute from './components/SecuredRoute';
 import RecipeAdmin from './components/RecipeAdmin';
-import RecipeEdit from './components/RecipeEdit';
 
 import './assets/styles/app.scss';
 
@@ -60,7 +59,7 @@ class App extends Component {
           <SecuredRoute 
             exact 
             path='/recipes/edit/:categoryKey/:key' 
-            component={RecipeEdit} 
+            component={RecipeAdmin} 
             checkingSession={checkingSession}
           />
           <Route 
