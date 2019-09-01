@@ -35,6 +35,15 @@ const mainReducer = (state = initialState, action) => {
             ...state.recipes.slice(recipeToUpdate+1)
           ]
         };
+      case "DELETE_RECIPE":
+        const recipeToDelete = state.recipes.findIndex(recipe => recipe._id === action.id);
+        return {
+          ...state,
+          recipes: [
+            ...state.recipes.slice(0,recipeToDelete),
+            ...state.recipes.slice(recipeToDelete+1)
+          ]
+        };
       default:
         return state
   }

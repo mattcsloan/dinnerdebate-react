@@ -93,9 +93,12 @@ class RecipeAdmin extends Component {
     !recipe && this.isExistingRecipe() && this.getExistingRecipe();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     const { recipe } = this.props;
-    !recipe && this.isExistingRecipe() && this.getExistingRecipe();
+    // Ensure there wasn't a recipe object before (meaning we didn't just delete it), 
+    // there is not currently a recipe object that was passed from props (already in redux store),
+    // and there should be a matching recipe in the DB (we know because we have an ID for it)
+    !prevProps.recipe && !recipe && this.isExistingRecipe() && this.getExistingRecipe();
   }
 
   async getExistingRecipe() {
@@ -103,51 +106,56 @@ class RecipeAdmin extends Component {
     // Recipe does not exist in store, so get it and add to store 
     await axios.get(`/api/recipes/${params.categoryKey}/${params.key}`)
       .then(response => {
-        this.props.setRecipe(response.data);
+        if(response.data) {
+          this.props.setRecipe(response.data);
 
-        const {
-          _id,
-          name,
-          key, 
-          description, 
-          category, 
-          categoryKey, 
-          source, 
-          sourceURL,
-          addedBy,
-          prepTime,
-          cookTime,
-          ingredients,
-          directions,
-          hints,
-          image,
-          servings,
-          tags,
-          featured,
-          relatedItems
-        } = response.data;
-    
-        this.setState({
-          _id,
-          name,
-          key, 
-          description, 
-          category, 
-          categoryKey, 
-          source, 
-          sourceURL,
-          addedBy,
-          prepTime,
-          cookTime,
-          ingredients,
-          directions,
-          hints,
-          image,
-          servings,
-          tags,
-          featured,
-          relatedItems
-        });      
+          const {
+            _id,
+            name,
+            key, 
+            description, 
+            category, 
+            categoryKey, 
+            source, 
+            sourceURL,
+            addedBy,
+            prepTime,
+            cookTime,
+            ingredients,
+            directions,
+            hints,
+            image,
+            servings,
+            tags,
+            featured,
+            relatedItems
+          } = response.data;
+      
+          this.setState({
+            _id,
+            name,
+            key, 
+            description, 
+            category, 
+            categoryKey, 
+            source, 
+            sourceURL,
+            addedBy,
+            prepTime,
+            cookTime,
+            ingredients,
+            directions,
+            hints,
+            image,
+            servings,
+            tags,
+            featured,
+            relatedItems
+          });        
+        } else {
+          console.log("Recipe does not exist.");
+          this.props.history.push('/');
+        }
       })
   }
 
@@ -361,14 +369,20 @@ class RecipeAdmin extends Component {
   }
 
   async deleteRecipe() {
+    const { recipe, deleteRecipe, history } = this.props;
     this.setState({
       disabled: true,
     });
 
-    await axios.delete(`/api/recipes/${this.state._id}`, {
+    await axios.delete(`/api/recipes/${recipe._id}`, {
       headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
-    });
-    this.props.history.push('/');
+    })
+      .then(response => {
+        if(response.status === 200) {
+          deleteRecipe(recipe._id);
+          history.push('/');
+        }
+      });
   }
 
   render() {
@@ -600,13 +614,15 @@ class RecipeAdmin extends Component {
         >
           Cancel
         </button>
-        <button
-          disabled={disabled}
-          className="btn btn-warning btn-small"
-          onClick={() => {this.deleteRecipe()}}
-        >
-          Delete Recipe
-        </button>
+        {this.isExistingRecipe() &&
+          <button
+            disabled={disabled}
+            className="btn btn-warning btn-small"
+            onClick={() => {this.deleteRecipe()}}
+          >
+            Delete Recipe
+          </button>
+        }
 
 
       {/*TODO:

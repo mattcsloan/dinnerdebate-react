@@ -26,3 +26,10 @@
    recipe
   }
  }
+
+ export const deleteRecipe = id => {
+  return {
+   type: 'DELETE_RECIPE',
+   id
+  }
+ }
