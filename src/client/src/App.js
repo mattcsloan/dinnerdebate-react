@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 import { Route, withRouter } from 'react-router-dom';
 import auth0Client from './components/Authentication';
 import Navigation from './components/Navigation';
@@ -6,8 +7,7 @@ import Recipes from './components/Recipes';
 import Recipe from './components/Recipe';
 import Callback from './components/Callback';
 import SecuredRoute from './components/SecuredRoute';
-import RecipeCreate from './components/RecipeCreate';
-import RecipeEdit from './components/RecipeEdit';
+import RecipeAdmin from './components/RecipeAdmin';
 
 import './assets/styles/app.scss';
 
@@ -20,7 +20,8 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    if (this.props.location.pathname === '/callback') {
+    const { location } = this.props;
+    if (location.pathname === '/callback') {
       this.setState({checkingSession:false});
       return;
     }
@@ -36,7 +37,7 @@ class App extends Component {
   render() {
     const { checkingSession } = this.state;
     return (
-      <div>
+      <>
         <Navigation />
         <div className="wrapper">
           <Route
@@ -47,7 +48,7 @@ class App extends Component {
           <SecuredRoute 
             exact 
             path='/recipes/create' 
-            component={RecipeCreate}
+            component={RecipeAdmin}
             checkingSession={checkingSession}
           />
           <Route 
@@ -58,7 +59,7 @@ class App extends Component {
           <SecuredRoute 
             exact 
             path='/recipes/edit/:categoryKey/:key' 
-            component={RecipeEdit} 
+            component={RecipeAdmin} 
             checkingSession={checkingSession}
           />
           <Route 
@@ -67,7 +68,7 @@ class App extends Component {
             component={Callback} 
           />
         </div>
-      </div>
+      </>
     );
   }
 }

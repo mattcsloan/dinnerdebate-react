@@ -21,12 +21,12 @@ function Navigation(props) {
         </div>
         <div className="nav-block">
           {!auth0Client.isAuthenticated() &&
-            <a onClick={auth0Client.signIn}>Sign In</a>
+            <button className="anchor" onClick={auth0Client.signIn}>Sign In</button>
           }
           {auth0Client.isAuthenticated() &&
             <div>
               <label>{auth0Client.getProfile().name}</label>
-              <a onClick={() => {signOut()}}>Sign Out</a>
+              <button className="anchor" onClick={() => {signOut()}}>Sign Out</button>
             </div>
           }
         </div>

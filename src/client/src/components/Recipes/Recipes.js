@@ -3,29 +3,27 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 class Recipes extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      recipes: null,
-    };
-  }
 
   async componentDidMount() {
-    const recipes = (await axios.get('/api/recipes')).data;
-    this.setState({
-      recipes,
-    });
+    const { recipes, setRecipes } = this.props;
+    if(recipes.length <= 1) {
+      // Load initial recipes from db
+      const recipes = (await axios.get('/api/recipes')).data;
+      setRecipes(recipes);
+    }
   }
 
   render() {
+    const { recipes } = this.props;
+
     return (
       <div className="container">
         <h1>Recipes</h1>
         <hr />
-        {this.state.recipes === null && <p>Loading recipes...</p>}
+        
+        {recipes === null && <p>Loading recipes...</p>}
         {
-          this.state.recipes && this.state.recipes.map(recipe => (
+          recipes && recipes.map(recipe => (
             <div key={recipe.key} >
               <Link
                 to={{

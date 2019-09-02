@@ -7,11 +7,12 @@ import IngredientSet from '../IngredientSet';
 
 import categories from '../../data/recipeCategories';
 
-class RecipeCreate extends Component {
+class RecipeAdmin extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+      _id: null,
       disabled: false,
       name: '',
       key: '',
@@ -24,27 +25,133 @@ class RecipeCreate extends Component {
       addedBy: {},
       prepTime: 0,
       cookTime: 0,
-      ingredients: [],
+      ingredients: [{
+        title: '',
+        list: [] 
+      }],
       directions: '',
       hints: [],
       image: {},
       servings: '',
       tags: [],
-      featured: false,
       relatedItems: [],
       editHintNum: null,
     };
   }
 
+  isExistingRecipe = () => this.props.location && this.props.location.state && this.props.location.state.recipeId;
+
   componentDidMount() {
-    // Move to defaultProps
-    this.setState({
-      ingredients: [{
-        title: '',
-        list: [
-        ] 
-      }]
-    })
+    const { recipe } = this.props;
+    if(recipe) {
+      const {
+        _id,
+        name,
+        key, 
+        description, 
+        category, 
+        categoryKey, 
+        source, 
+        sourceURL,
+        addedBy,
+        prepTime,
+        cookTime,
+        ingredients,
+        directions,
+        hints,
+        image,
+        servings,
+        tags,
+        relatedItems
+      } = recipe;  
+
+      this.setState({
+        _id,
+        name,
+        key, 
+        description, 
+        category, 
+        categoryKey, 
+        source, 
+        sourceURL,
+        addedBy,
+        prepTime,
+        cookTime,
+        ingredients,
+        directions,
+        hints,
+        image,
+        servings,
+        tags,
+        relatedItems
+      });  
+    }
+
+    !recipe && this.isExistingRecipe() && this.getExistingRecipe();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { recipe } = this.props;
+    // Ensure there wasn't a recipe object before (meaning we didn't just delete it), 
+    // there is not currently a recipe object that was passed from props (already in redux store),
+    // and there should be a matching recipe in the DB (we know because we have an ID for it)
+    !prevProps.recipe && !recipe && this.isExistingRecipe() && this.getExistingRecipe();
+  }
+
+  async getExistingRecipe() {
+    const { match: { params } } = this.props;
+    // Recipe does not exist in store, so get it and add to store 
+    await axios.get(`/api/recipes/${params.categoryKey}/${params.key}`)
+      .then(response => {
+        if(response.data) {
+          this.props.setRecipe(response.data);
+
+          const {
+            _id,
+            name,
+            key, 
+            description, 
+            category, 
+            categoryKey, 
+            source, 
+            sourceURL,
+            addedBy,
+            prepTime,
+            cookTime,
+            ingredients,
+            directions,
+            hints,
+            image,
+            servings,
+            tags,
+            relatedItems
+          } = response.data;
+      
+          this.setState({
+            _id,
+            name,
+            key, 
+            description, 
+            category, 
+            categoryKey, 
+            source, 
+            sourceURL,
+            addedBy,
+            prepTime,
+            cookTime,
+            ingredients,
+            directions,
+            hints,
+            image,
+            servings,
+            tags,
+            relatedItems
+          });        
+        } else {
+          console.log("Recipe does not exist.");
+          this.props.history.push('/');
+        }
+      })
   }
 
   updateValue(type, value) {
@@ -154,7 +261,6 @@ class RecipeCreate extends Component {
   }
 
   async submit() {
-
     const {
       name,
       key, 
@@ -172,7 +278,6 @@ class RecipeCreate extends Component {
       image,
       servings,
       tags,
-      featured,
       relatedItems
     } = this.state;
 
@@ -180,7 +285,7 @@ class RecipeCreate extends Component {
       disabled: true,
     });
 
-    await axios.post('/api/recipes', {
+    const fullRecipe = {
       name,
       key, 
       description, 
@@ -198,28 +303,104 @@ class RecipeCreate extends Component {
       image,
       servings,
       tags,
-      featured,
       relatedItems
-    }, {
-      headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
+    };
+
+    // determine whether to update or create recipe
+    if(this.isExistingRecipe()) {
+      await axios.put(
+        `/api/recipes/${this.state.categoryKey}/${this.state.key}/${this.state._id}`,
+        fullRecipe, 
+        {
+          headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
+        }
+      )
+        .then(response => {
+          if(response.statusText === 'Created') {
+            this.dispatchAndRoute('update', response.data);
+          }
+        });
+    } else {
+      await axios.post(
+        '/api/recipes',
+        fullRecipe, 
+        {
+          headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
+        }
+      )
+        .then(response => {
+          if(response.statusText === 'Created') {
+            this.dispatchAndRoute('create', response.data);
+          }
+        });
+    }
+  }
+
+  dispatchAndRoute = (type, data) => {
+    type === 'create'
+      ? this.props.createRecipe(data)
+      : this.props.updateRecipe(data, data._id);
+  
+    const { categoryKey, key, _id } = data;
+    this.props.history.push({
+      pathname: `/recipes/view/${categoryKey}/${key}`,
+      state: { recipeId: _id }
+    });
+  }
+
+  cancel = () => {
+    if(this.isExistingRecipe()) {
+      const { categoryKey, key, _id } = this.props.recipe;
+      this.props.history.push({
+        pathname: `/recipes/view/${categoryKey}/${key}`,
+        state: { recipeId: _id }
+      });
+    } else {
+      this.props.history.push('/');
+    }
+  }
+
+  async deleteRecipe() {
+    const { recipe, deleteRecipe, history } = this.props;
+    this.setState({
+      disabled: true,
     });
 
-    this.props.history.push('/');
+    await axios.delete(`/api/recipes/${recipe._id}`, {
+      headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
+    })
+      .then(response => {
+        if(response.status === 200) {
+          deleteRecipe(recipe._id);
+          history.push('/');
+        }
+      });
   }
 
   render() {
-
-    const { 
-      disabled, 
-      ingredients, 
-      hints, 
-      editHintNum, 
-      tags, 
+    const {
+      disabled,
+      name,
+      description, 
+      categoryKey, 
+      source, 
+      sourceURL,
+      // addedBy,
+      prepTime,
+      cookTime,
+      ingredients,
+      directions,
+      hints,
+      editHintNum,
+      // image,
+      servings,
+      tags,
+      // relatedItems
     } = this.state;
 
     return (
-      <div className="create-recipe">
-        <h1>New Recipe</h1>
+      <div className="recipe-admin">
+        <h1>{this.isExistingRecipe() ? `Update Recipe: ${this.props.recipe && this.props.recipe.name}` : 'Add New Recipe'}</h1>
         <hr />
         <div className="form-group">
           <label>Name:</label>
@@ -228,6 +409,7 @@ class RecipeCreate extends Component {
             type="text"
             onChange={e => this.updateValue("name", e.target.value)}
             placeholder="Recipe title"
+            value={name}
           />
         </div>
         <div className="form-group">
@@ -237,6 +419,7 @@ class RecipeCreate extends Component {
             type="text"
             onChange={e => this.updateValue("description", e.target.value)}
             placeholder="Describe your recipe"
+            value={description}
           />
         </div>
         <div className="form-group">
@@ -245,9 +428,12 @@ class RecipeCreate extends Component {
             onChange={(e) => {
               this.updateCategoryValues(e.target[e.target.selectedIndex].innerHTML, e.target.value)
             }}
+            value={categoryKey}
           >
             <option value="">Select a category...</option>
-            {categories.map(category => <option key={category} value={this.createCategoryKey(category)}>{category}</option>)}
+            {categories.map(category => 
+              <option key={category} value={this.createCategoryKey(category)}>{category}</option>
+            )}
           </select>
         </div>
         <div className="form-group">
@@ -257,6 +443,7 @@ class RecipeCreate extends Component {
             type="text"
             onChange={e => this.updateValue("source", e.target.value)}
             placeholder="Name of recipe creator"
+            value={source}
           />
         </div>
         <div className="form-group">
@@ -266,6 +453,7 @@ class RecipeCreate extends Component {
             type="text"
             onChange={e => this.updateValue("sourceURL", e.target.value)}
             placeholder="URL to recipe (if applicable)"
+            value={sourceURL}
           />
         </div>
         <div className="form-group">
@@ -275,6 +463,7 @@ class RecipeCreate extends Component {
             type="text"
             onChange={e => this.updateValue("prepTime", e.target.value)}
             placeholder=""
+            value={prepTime}
           />
         </div>
         <div className="form-group">
@@ -284,6 +473,7 @@ class RecipeCreate extends Component {
             type="text"
             onChange={e => this.updateValue("cookTime", e.target.value)}
             placeholder=""
+            value={cookTime}
           />
         </div>
         <div className="form-group">
@@ -293,6 +483,7 @@ class RecipeCreate extends Component {
             type="text"
             onChange={e => this.updateValue("servings", e.target.value)}
             placeholder=""
+            value={servings}
           />
         </div>
 
@@ -319,14 +510,14 @@ class RecipeCreate extends Component {
                   onBlur={e => this.addIngredient(e.target.value, index)}
                   placeholder="Add ingredient"
                 />
+                <button
+                  type="button"
+                  disabled={disabled}
+                  className="btn btn-primary btn-small"
+                >
+                  Add Ingredient
+                </button>
               </div>
-              <button
-                type="button"
-                disabled={disabled}
-                className="btn btn-primary"
-              >
-                Add Ingredient
-              </button>
             </div>
 
           </form>
@@ -335,7 +526,7 @@ class RecipeCreate extends Component {
         <button
           type="button"
           disabled={disabled}
-          className="btn btn-link"
+          className="btn btn-link btn-small"
           onClick={this.addIngredientSet}
         >
           Add New Set of Ingredients
@@ -347,6 +538,7 @@ class RecipeCreate extends Component {
             disabled={disabled}
             onChange={e => this.updateValue("directions", e.target.value)}
             placeholder="Enter recipe directions"
+            value={directions}
           >
           </textarea>
         </div>
@@ -366,8 +558,8 @@ class RecipeCreate extends Component {
                 ) : (
                   <span>{hint}</span>
                 )}
-                <a onClick={() => this.enterEditHintMode(index)}>Edit</a>
-                <a onClick={() => this.removeHint(index)}>X</a>
+                <button className="anchor" onClick={() => this.enterEditHintMode(index)}>Edit</button>
+                <button className="anchor" onClick={() => this.removeHint(index)}>X</button>
               </div>
             ))}
             <input
@@ -392,7 +584,7 @@ class RecipeCreate extends Component {
           {tags && tags.map((tag, index) => (
             <div className="tag" key={`tag-${index}`}>
               <span>{tag}</span>
-              <a onClick={() => this.removeTag(index)}>X</a>
+              <button className="anchor" onClick={() => this.removeTag(index)}>X</button>
             </div>
           ))}
         </div>
@@ -402,17 +594,30 @@ class RecipeCreate extends Component {
           className="btn btn-primary"
           onClick={() => {this.submit()}}
         >
-          Create Recipe
+          {this.isExistingRecipe() ? 'Update Recipe' : 'Create Recipe'}
         </button>
+        <button
+          disabled={disabled}
+          className="btn btn-link"
+          onClick={() => {this.cancel()}}
+        >
+          Cancel
+        </button>
+        {this.isExistingRecipe() &&
+          <button
+            disabled={disabled}
+            className="btn btn-warning btn-small"
+            onClick={() => {this.deleteRecipe()}}
+          >
+            Delete Recipe
+          </button>
+        }
 
 
       {/*TODO:
       addedBy,
-      ingredients,
       image,
       relatedItems */}
-
-
 
 
       </div>
@@ -420,4 +625,4 @@ class RecipeCreate extends Component {
   }
 }
 
-export default withRouter(RecipeCreate);
+export default withRouter(RecipeAdmin);
