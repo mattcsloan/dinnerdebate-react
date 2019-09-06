@@ -23,14 +23,17 @@ class Recipe extends Component {
         <h1><Link to="/">Recipes</Link> &raquo; {recipe.name}</h1>
 
         <hr />
+        {recipe.image && recipe.image.url && recipe.image.url !== '' &&
+          <img src={recipe.image.url} alt={recipe.name} width="300" />
+        }
         {recipe.description && <p>{recipe.description}</p>}
         {recipe.category && <p><strong>Category:</strong> {recipe.category}</p>}
         {recipe.prepTime && <p><strong>Prep Time:</strong> {recipe.prepTime}</p>}
         {recipe.cookTime && <p><strong>Cook Time:</strong> {recipe.cookTime}</p>}
         {recipe.servings && <p><strong>Servings:</strong> {recipe.servings}</p>}
-        {recipe.source || recipe.sourceURL &&
+        {(recipe.source || recipe.sourceURL) &&
           <p><strong>Source:</strong> {recipe.sourceURL && recipe.sourceURL !== '' 
-            ? (<a href={recipe.sourceURL} target="_blank">{recipe.source ? recipe.source : recipe.sourceURL}</a>)
+            ? <a href={recipe.sourceURL} target="_blank" rel="noopener noreferrer">{recipe.source ? recipe.source : recipe.sourceURL}</a>
             : recipe.source
           }</p>
         }
@@ -63,7 +66,6 @@ class Recipe extends Component {
         {/* 
           TODO:
             addedBy,
-            image,
             relatedItems
         */}
 

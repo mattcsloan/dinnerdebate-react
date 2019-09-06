@@ -16,6 +16,10 @@ a {
   }
 }
 
+img {
+  max-width: 100% !important;
+}
+
 button,
 .btn {
   background: #b13fa3;
@@ -57,6 +61,17 @@ button,
     }
   }
 
+  &.btn-subtle {
+    background: #fff;
+    border-color: #ddd;
+    color: #b13fa3;
+
+    &:hover {
+      color: #421b52;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.08);
+    }
+  }
+
   &.btn-small {
     padding: 8px 16px;
     font-size: 14px;  
@@ -81,6 +96,17 @@ button,
       text-decoration: underline;
       cursor: pointer;
     }  
+  }
+}
+
+.btn-group {
+  .btn,
+  button {
+    margin-right: 24px;
+
+    &:last-child {
+      margin-right: 0;
+    }
   }
 }
 
