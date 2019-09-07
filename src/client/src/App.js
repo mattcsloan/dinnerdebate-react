@@ -39,35 +39,33 @@ class App extends Component {
     return (
       <>
         <Navigation />
-        <div className="wrapper">
-          <Route
-            exact
-            path='/' 
-            component={Recipes} 
-          />
-          <SecuredRoute 
-            exact 
-            path='/recipes/create' 
-            component={RecipeAdmin}
-            checkingSession={checkingSession}
-          />
-          <Route 
-            exact 
-            path='/recipes/view/:categoryKey/:key' 
-            component={Recipe} 
-          />
-          <SecuredRoute 
-            exact 
-            path='/recipes/edit/:categoryKey/:key' 
-            component={RecipeAdmin} 
-            checkingSession={checkingSession}
-          />
-          <Route 
-            exact 
-            path='/callback' 
-            component={Callback} 
-          />
-        </div>
+        <Route
+          exact
+          path='/' 
+          component={Recipes} 
+        />
+        <SecuredRoute 
+          exact 
+          path='/recipes/create' 
+          component={RecipeAdmin}
+          checkingSession={checkingSession}
+        />
+        <Route 
+          exact 
+          path='/recipes/view/:categoryKey/:key' 
+          component={Recipe} 
+        />
+        <SecuredRoute 
+          exact 
+          path='/recipes/edit/:categoryKey/:key' 
+          component={RecipeAdmin} 
+          checkingSession={checkingSession}
+        />
+        <Route 
+          exact 
+          path='/callback' 
+          component={Callback} 
+        />
       </>
     );
   }

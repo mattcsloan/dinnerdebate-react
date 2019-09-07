@@ -17,7 +17,7 @@ class Recipes extends Component {
     const { recipes } = this.props;
 
     return (
-      <div className="container">
+      <div className="wrapper">
         <h1>Recipes</h1>
         <hr />
         

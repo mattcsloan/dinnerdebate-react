@@ -449,7 +449,7 @@ class RecipeAdmin extends Component {
     } = this.state;
 
     return (
-      <div className="recipe-admin">
+      <div className="recipe-admin wrapper">
         <h1>{this.isExistingRecipe() ? `Update Recipe: ${this.props.recipe && this.props.recipe.name}` : 'Add New Recipe'}</h1>
         <hr />
         <div className="form-group">
