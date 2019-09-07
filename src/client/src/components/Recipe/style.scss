@@ -1,0 +1,37 @@
+.hero {
+  width: 100%;
+  background: #b13fa3;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+
+  &.has-image {
+    height: 50vh;
+    padding: 0;
+  }
+
+  img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+
+  h1 {
+    color: #fff;
+    position: relative;
+    z-index: 2;
+    text-shadow: 0 8px 80px rgba(0,0,0,0.9);
+    font-size: 85px;
+    font-weight: 600;
+    opacity: 0.7;
+    text-transform: uppercase;
+    text-align: center;
+  }
+}

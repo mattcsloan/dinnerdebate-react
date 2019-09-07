@@ -87,7 +87,7 @@ module.exports = function(app) {
     });
 
     // create recipe
-    app.post('/api/recipes', checkJwt, function(req, res) {
+    app.post('/api/recipes', function(req, res) {
         // use mongoose to add a new recipe in the database
         // look for existing recipe with same name and category first
         Recipes.findOne({
@@ -248,34 +248,34 @@ module.exports = function(app) {
 
     //upload image to cloudinary cdn
     app.post('/api/upload', upload.single('file'), function(req,res,next){
-      if(req.file) {
-        var fileName = req.file.originalname.split('.');
-        var randomNumber = Math.floor((Math.random() * 100000) + 1);
-        fileName = fileName[0];
-        cloudinary.uploader.upload(req.file.path, function(result, error) {
-            if(result.url) {
-                res.status(200).json({
-                    fileUrl: result.url,
-                    fileWidth: result.width,
-                    fileHeight: result.height
-                });
-            } else {
-                res.json(error);
-            }
-        }, { 
-            public_id: randomNumber + '/' + fileName,
-            overwrite: false,
-            allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
-            eager: [
-                { width: 1000, angle: 'exif' }, 
-                { width: 300, height: 200, crop: "fill", angle: 'exif' }, 
-                { width: 300, height: 300, crop: "fill", angle: 'exif' } 
-            ]
-        });
-      } else {
-        console.log('no file specified');
-        res.json(200);
-      }
+        if(req.file) {
+            var fileName = req.file.originalname.split('.');
+            var randomNumber = Math.floor((Math.random() * 100000) + 1);
+            fileName = fileName[0];
+            cloudinary.uploader.upload(req.file.path, function(result, error) {
+                if(result.url) {
+                    res.status(200).json({
+                        fileUrl: result.url,
+                        fileWidth: result.width,
+                        fileHeight: result.height
+                    });
+                } else {
+                    res.json(error);                
+                }
+            }, { 
+                public_id: randomNumber + '/' + fileName,
+                overwrite: false,
+                allowed_formats: ['jpg', 'jpeg', 'png', 'gif'],
+                eager: [
+                    { width: 1000, angle: 'exif' }, 
+                    { width: 300, height: 200, crop: "fill", angle: 'exif' }, 
+                    { width: 300, height: 300, crop: "fill", angle: 'exif' } 
+                ]
+            });
+        } else {
+            console.log('no file specified');
+            res.json(200);
+        }
 
     });
 
@@ -285,7 +285,7 @@ module.exports = function(app) {
         public_id = public_id.split('.')[0];
         cloudinary.api.delete_resources([public_id],
             function(result){
-                res.status(201).json('deleted image: ' + public_id);
+                res.status(200).json('deleted image: ' + public_id);
             }
         );
     });

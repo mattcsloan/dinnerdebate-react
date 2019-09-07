@@ -31,7 +31,12 @@ class RecipeAdmin extends Component {
       }],
       directions: '',
       hints: [],
-      image: {},
+      image: {
+        url: '',
+        width: null,
+        height: null
+      },
+
       servings: '',
       tags: [],
       relatedItems: [],
@@ -377,6 +382,51 @@ class RecipeAdmin extends Component {
       });
   }
 
+  uploadFile = (e) => {
+    if(e.target.files[0]) {
+      const file = e.target.files[0];
+      const data = new FormData();
+      data.append('file', file);
+      axios.post('/api/upload',
+        data
+      )
+        .then(response => {
+          if(response.status === 200) {
+            const { fileUrl, fileWidth, fileHeight } = response.data;
+            this.setState({
+              image: {
+                url: fileUrl,
+                width: fileWidth,
+                height: fileHeight
+              }
+            });
+
+          }
+        });  
+    }
+  }
+
+  removeImage = () => {
+    this.setState({
+      image: {
+        url: '',
+        width: null,
+        height: null
+      },
+    });
+
+    let publicId = this.state.image.url.split('/');
+    publicId = publicId[publicId.length - 2] + '/' + publicId[publicId.length - 1];
+    publicId = publicId.replace(/\//g, "%2F");
+
+    axios.delete(`/api/upload?id=${publicId}`, {
+      headers: { 'Authorization': `Bearer ${auth0Client.getIdToken()}` }
+    })
+      .then(response => {
+        console.log("response", response);
+      });  
+  }
+
   render() {
     const {
       disabled,
@@ -392,14 +442,14 @@ class RecipeAdmin extends Component {
       directions,
       hints,
       editHintNum,
-      // image,
+      image,
       servings,
       tags,
       // relatedItems
     } = this.state;
 
     return (
-      <div className="recipe-admin">
+      <div className="recipe-admin wrapper">
         <h1>{this.isExistingRecipe() ? `Update Recipe: ${this.props.recipe && this.props.recipe.name}` : 'Add New Recipe'}</h1>
         <hr />
         <div className="form-group">
@@ -580,46 +630,67 @@ class RecipeAdmin extends Component {
             placeholder="Add tag(s)"
           />
         </div>
-        <div className="tags">
-          {tags && tags.map((tag, index) => (
-            <div className="tag" key={`tag-${index}`}>
-              <span>{tag}</span>
-              <button className="anchor" onClick={() => this.removeTag(index)}>X</button>
-            </div>
-          ))}
-        </div>
-
-        <button
-          disabled={disabled}
-          className="btn btn-primary"
-          onClick={() => {this.submit()}}
-        >
-          {this.isExistingRecipe() ? 'Update Recipe' : 'Create Recipe'}
-        </button>
-        <button
-          disabled={disabled}
-          className="btn btn-link"
-          onClick={() => {this.cancel()}}
-        >
-          Cancel
-        </button>
-        {this.isExistingRecipe() &&
-          <button
-            disabled={disabled}
-            className="btn btn-warning btn-small"
-            onClick={() => {this.deleteRecipe()}}
-          >
-            Delete Recipe
-          </button>
+        {tags && 
+          <div className="tags">
+            {tags.map((tag, index) => (
+              <div className="tag" key={`tag-${index}`}>
+                <span>{tag}</span>
+                <button className="anchor" onClick={() => this.removeTag(index)}>X</button>
+              </div>
+            ))}
+          </div>
         }
 
+        {image.url !== '' ? ( 
+          <>
+            <img className="upload-preview" src={image.url} alt={name} />
+            <div className="btn-group">
+              <button 
+                className="btn-subtle"
+                onClick={() => this.removeImage()}
+              >
+                Remove Image
+              </button>
+            </div>
+          </>
+        ) : (
+          <label className="btn upload-btn">
+            Select File To Upload
+            <input onChange={e => this.uploadFile(e)} type="file" accept="image/*" />
+          </label>
+
+        )
+        }
 
       {/*TODO:
       addedBy,
-      image,
       relatedItems */}
 
-
+        <div className="btn-group">
+          <button
+            disabled={disabled}
+            className="btn btn-primary"
+            onClick={() => {this.submit()}}
+          >
+            {this.isExistingRecipe() ? 'Update Recipe' : 'Create Recipe'}
+          </button>
+          <button
+            disabled={disabled}
+            className="btn btn-link"
+            onClick={() => {this.cancel()}}
+          >
+            Cancel
+          </button>
+          {this.isExistingRecipe() &&
+            <button
+              disabled={disabled}
+              className="btn btn-warning btn-small"
+              onClick={() => {this.deleteRecipe()}}
+            >
+              Delete Recipe
+            </button>
+          }
+        </div>
       </div>
     )
   }

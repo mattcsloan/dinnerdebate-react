@@ -4,11 +4,35 @@
   }
 
   .btn-warning {
-    display: block;
+    float: right;
   }
 
-  .btn-link {
+  .btn-link.btn-small {
     margin-top: 0;
     margin-left: -16px;
+  }
+
+  .upload-btn {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+
+    &:hover {
+      cursor: pointer;
+      background: #421b52;
+      color: #fff;
+      text-decoration: none;
+    }
+
+    input[type=file] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 }

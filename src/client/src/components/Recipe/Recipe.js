@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import cn from 'classnames';
 
 class Recipe extends Component {
   async componentDidMount() {
@@ -16,67 +17,78 @@ class Recipe extends Component {
 
   render() {
     const { match: { params }, recipe } = this.props;
+    const hasImage = recipe && recipe.image && recipe.image.url && recipe.image.url !== '';
     
     if (recipe === null || recipe === undefined) return <p>Loading ...</p>;
     return (
-      <div>
-        <h1><Link to="/">Recipes</Link> &raquo; {recipe.name}</h1>
+      <>
+        <div className={cn('hero', {
+          'has-image': hasImage
+        })}>
+          {hasImage &&
+            <img src={recipe.image.url} alt={recipe.name} />
+          }
+          <h1>{recipe.name}</h1>
+        </div>
+        <div className="wrapper">
+          <h1><Link to="/">Recipes</Link> &raquo; {recipe.name}</h1>
 
-        <hr />
-        {recipe.description && <p>{recipe.description}</p>}
-        {recipe.category && <p><strong>Category:</strong> {recipe.category}</p>}
-        {recipe.prepTime && <p><strong>Prep Time:</strong> {recipe.prepTime}</p>}
-        {recipe.cookTime && <p><strong>Cook Time:</strong> {recipe.cookTime}</p>}
-        {recipe.servings && <p><strong>Servings:</strong> {recipe.servings}</p>}
-        {recipe.source || recipe.sourceURL &&
-          <p><strong>Source:</strong> {recipe.sourceURL && recipe.sourceURL !== '' 
-            ? (<a href={recipe.sourceURL} target="_blank">{recipe.source ? recipe.source : recipe.sourceURL}</a>)
-            : recipe.source
-          }</p>
-        }
-        {recipe.ingredients && recipe.ingredients.map((ingredientList, index) => (
-          <div key={index}>
-            <h3>{ingredientList.title}</h3>
-            <ul>
-              {ingredientList.list.map((ingredient, i) => (
-                <li key={i}>{ingredient}</li>
+          <hr />
+          {recipe.description && <p>{recipe.description}</p>}
+          {recipe.category && <p><strong>Category:</strong> {recipe.category}</p>}
+          {recipe.prepTime && <p><strong>Prep Time:</strong> {recipe.prepTime}</p>}
+          {recipe.cookTime && <p><strong>Cook Time:</strong> {recipe.cookTime}</p>}
+          {recipe.servings && <p><strong>Servings:</strong> {recipe.servings}</p>}
+          {(recipe.source || recipe.sourceURL) &&
+            <p><strong>Source:</strong> {recipe.sourceURL && recipe.sourceURL !== '' 
+              ? <a href={recipe.sourceURL} target="_blank" rel="noopener noreferrer">{recipe.source ? recipe.source : recipe.sourceURL}</a>
+              : recipe.source
+            }</p>
+          }
+          {recipe.ingredients && recipe.ingredients.map((ingredientList, index) => (
+            <div key={index}>
+              <h3>{ingredientList.title}</h3>
+              <ul>
+                {ingredientList.list.map((ingredient, i) => (
+                  <li key={i}>{ingredient}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          {recipe.directions && <p>{recipe.directions}</p>}
+          {recipe.hints && recipe.hints.map((hint, index) => (
+            <div className="hint" key={`hint-${index}`}>
+                <span>{hint}</span>
+            </div>
+          ))}
+          {recipe.tags && 
+            <div className="tags">
+              {recipe.tags.map((tag, index) => (
+                <div className="tag" key={`tag-${index}`}>
+                  <span>{tag}</span>
+                </div>
               ))}
-            </ul>
-          </div>
-        ))}
-        {recipe.directions && <p>{recipe.directions}</p>}
-        {recipe.hints && recipe.hints.map((hint, index) => (
-          <div className="hint" key={`hint-${index}`}>
-              <span>{hint}</span>
-          </div>
-        ))}
-        {recipe.tags && 
-          <div className="tags">
-            {recipe.tags.map((tag, index) => (
-              <div className="tag" key={`tag-${index}`}>
-                <span>{tag}</span>
-              </div>
-            ))}
-          </div>
-        }
+            </div>
+          }
 
-        {/* 
-          TODO:
-            addedBy,
-            image,
-            relatedItems
-        */}
+          {/* 
+            TODO:
+              addedBy,
+              relatedItems
+          */}
 
-        <Link
-          to={{
-            pathname: `/recipes/edit/${params.categoryKey}/${params.key}`,
-            state: { recipeId: recipe._id }
-          }}
-          className="btn"
-        >
-          Edit Recipe
-        </Link>
-      </div>
+          <Link
+            to={{
+              pathname: `/recipes/edit/${params.categoryKey}/${params.key}`,
+              state: { recipeId: recipe._id }
+            }}
+            className="btn"
+          >
+            Edit Recipe
+          </Link>
+
+        </div>
+      </>
     )
   }
 }
