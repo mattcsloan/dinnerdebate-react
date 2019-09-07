@@ -29,5 +29,6 @@ module.exports = mongoose.model('Recipes', {
     servings : {type : String, default: ''},
     tags : {type : Array, default: []},
     featured : {type : Boolean, default: false},
+    pairings: {type: Array, default: []},
     relatedItems : {type : Array, default: []}
 });

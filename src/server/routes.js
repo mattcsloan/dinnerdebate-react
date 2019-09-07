@@ -33,6 +33,35 @@ module.exports = function(app) {
         });
     });
 
+    // get all recipes - but only the basic information needed for each item
+    app.get('/api/recipes/basic', function(req, res) {
+        // use mongoose to get all recipes in the database
+        var excludeFields = {
+            __v: false,
+            description : false,
+            date : false,
+            source : false,
+            sourceURL : false,
+            addedBy : false,
+            prepTime : false,
+            cookTime : false,
+            ingredients : false,
+            directions : false,
+            hints : false,
+            servings : false,
+            featured : false,
+            pairings: false,
+            relatedItems : false
+        }
+
+        Recipes.find({}, excludeFields, function(err, recipes) {
+            if (err) {
+                res.send(err);
+            }
+            res.json(recipes); // return all recipes in JSON format
+        });
+    });
+
     // get n number of recipes
     app.get('/api/recipes/first/:numItems/:sort', function(req, res) {
         var numItems = req.params.numItems;
