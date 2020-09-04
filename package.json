@@ -24,7 +24,7 @@
     "jade": "^1.9.2",
     "jwks-rsa": "^1.4.0",
     "method-override": ">=2.3.10",
-    "mongodb": "^2.2.31",
+    "mongodb": "^3.1.13",
     "mongoose": "^4.11.13",
     "morgan": "^1.9.1",
     "multer": "^1.1.0",
